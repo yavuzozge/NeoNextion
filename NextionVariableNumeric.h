@@ -17,7 +17,7 @@ public:
    * \copydoc INextionWidget::INextionWidget
    */
   NextionVariableNumeric(Nextion &nex, uint8_t page, uint8_t component,
-                         const char *name)
+                         const String &name)
       : INextionWidget(nex, page, component, name)
       , INextionNumericalValued(nex, page, component, name)
   {

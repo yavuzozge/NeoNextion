@@ -13,7 +13,7 @@
 class NextionTimer : public INextionTouchable
 {
 public:
-  NextionTimer(Nextion &nex, uint8_t page, uint8_t component, const char *name);
+  NextionTimer(Nextion &nex, uint8_t page, uint8_t component, const String &name);
 
   uint32_t getCycle();
   bool setCycle(uint32_t cycle);

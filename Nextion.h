@@ -10,6 +10,8 @@ extern char *itoa(int a, char *buffer, unsigned char radix);
 #include <Arduino.h>
 #endif
 
+#include <WString.h>
+
 #include "NextionTypes.h"
 
 class INextionTouchable;
@@ -37,7 +39,7 @@ public:
   void poll();
 
   bool refresh();
-  bool refresh(const char *objectName);
+  bool refresh(const String &objectName);
 
   bool sleep();
   bool wake();
@@ -51,7 +53,7 @@ public:
   bool drawPicture(uint16_t x, uint16_t y, uint8_t id);
   bool drawPicture(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t id);
   bool drawStr(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t fontID,
-               char *str, uint32_t bgColour = NEX_COL_BLACK,
+               const String &str, uint32_t bgColour = NEX_COL_BLACK,
                uint32_t fgColour = NEX_COL_WHITE,
                uint8_t bgType = NEX_BG_SOLIDCOLOUR,
                NextionFontAlignment xCentre = NEX_FA_CENTRE,
@@ -63,7 +65,7 @@ public:
   bool drawCircle(uint16_t x, uint16_t y, uint16_t r, uint32_t colour);
 
   void registerTouchable(INextionTouchable *touchable);
-  void sendCommand(char *command);
+  void sendCommand(const String &command);
   bool checkCommandComplete();
   bool receiveNumber(uint32_t *number);
   size_t receiveString(char *buffer, size_t len);

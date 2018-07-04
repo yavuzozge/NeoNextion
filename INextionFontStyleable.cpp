@@ -7,7 +7,7 @@
  */
 INextionFontStyleable::INextionFontStyleable(Nextion &nex, uint8_t page,
                                              uint8_t component,
-                                             const char *name)
+                                             const String &name)
     : INextionWidget(nex, page, component, name)
 {
 }
@@ -54,15 +54,7 @@ bool INextionFontStyleable::setHAlignment(NextionFontAlignment align,
  */
 NextionFontAlignment INextionFontStyleable::getHAlignment()
 {
-  size_t commandLen = 10 + strlen(m_name);
-  char commandBuffer[commandLen];
-  snprintf(commandBuffer, commandLen, "get %s.xcen", m_name);
-  sendCommand(commandBuffer, false);
-  uint32_t align;
-  if (m_nextion.receiveNumber(&align))
-    return (NextionFontAlignment)align;
-  else
-    return NEX_FA_NONE;
+  return (NextionFontAlignment)getNumberProperty("xcen");
 }
 
 /*!
@@ -85,15 +77,7 @@ bool INextionFontStyleable::setVAlignment(NextionFontAlignment align,
  */
 NextionFontAlignment INextionFontStyleable::getVAlignment()
 {
-  size_t commandLen = 10 + strlen(m_name);
-  char commandBuffer[commandLen];
-  snprintf(commandBuffer, commandLen, "get %s.ycen", m_name);
-  sendCommand(commandBuffer, false);
-  uint32_t align;
-  if (m_nextion.receiveNumber(&align))
-    return (NextionFontAlignment)align;
-  else
-    return NEX_FA_NONE;
+  return (NextionFontAlignment)getNumberProperty("ycen");
 }
 
 /*!

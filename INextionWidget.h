@@ -16,24 +16,24 @@ class INextionWidget
 {
 public:
   INextionWidget(Nextion &nex, uint8_t page, uint8_t component,
-                 const char *name);
+                 const String &name);
 
   uint8_t getPageID();
   uint8_t getComponentID();
 
-  bool setNumberProperty(char *propertyName, uint32_t value);
-  uint32_t getNumberProperty(char *propertyName);
-  bool setStringProperty(char *propertyName, char *value);
-  size_t getStringProperty(char *propertyName, char *value, size_t len);
+  bool setNumberProperty(const String &propertyName, uint32_t value);
+  uint32_t getNumberProperty(const String &propertyName);
+  bool setStringProperty(const String &propertyName, const String &value);
+  size_t getStringProperty(const String &propertyName, char *value, size_t len);
 
 protected:
-  bool sendCommand(char *commandStr, bool checkComplete = true);
+  bool sendCommand(const String &commandStr, bool checkComplete = true);
 
 protected:
   Nextion &m_nextion;    //!< Reference to the Nextion driver
   uint8_t m_pageID;      //!< ID of page this widget is on
   uint8_t m_componentID; //!< Component ID of this widget
-  const char *m_name;    //!< Name of this widget
+  const String &m_name;  //!< Name of this widget
 };
 
 #endif

@@ -6,7 +6,7 @@
  * \copydoc INextionWidget::INextionWidget
  */
 NextionPage::NextionPage(Nextion &nex, uint8_t page, uint8_t component,
-                         const char *name)
+                         const String &name)
     : INextionWidget(nex, page, component, name)
 {
 }
@@ -17,10 +17,7 @@ NextionPage::NextionPage(Nextion &nex, uint8_t page, uint8_t component,
  */
 bool NextionPage::show()
 {
-  size_t commandLen = 6 + strlen(m_name);
-  char command[commandLen];
-  snprintf(command, commandLen, "page %s", m_name);
-  return sendCommand(command);
+  return sendCommand("page " + m_name);
 }
 
 /*!

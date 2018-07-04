@@ -18,7 +18,7 @@ public:
    * \copydoc INextionWidget::INextionWidget
    */
   NextionVariableString(Nextion &nex, uint8_t page, uint8_t component,
-                        const char *name)
+                        const String &name)
       : INextionWidget(nex, page, component, name)
       , INextionStringValued(nex, page, component, name)
   {

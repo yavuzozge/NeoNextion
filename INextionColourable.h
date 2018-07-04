@@ -15,7 +15,7 @@ class INextionColourable : public virtual INextionWidget
 {
 public:
   INextionColourable(Nextion &nex, uint8_t page, uint8_t component,
-                     const char *name);
+                     const String &name);
 
   bool setForegroundColour(uint32_t colour, bool refresh = true);
   uint32_t getForegroundColour();
@@ -29,8 +29,8 @@ public:
   bool setEventBackgroundColour(uint32_t colour, bool refresh = true);
   uint32_t getEventBackgroundColour();
 
-  bool setColour(char *type, uint32_t colour, bool refresh);
-  uint32_t getColour(char *type);
+  bool setColour(const String &type, uint32_t colour, bool refresh);
+  uint32_t getColour(const String &type);
 
   bool afterSet(bool result, bool refresh);
 };

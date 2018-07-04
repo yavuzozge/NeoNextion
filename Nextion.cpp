@@ -86,12 +86,9 @@ bool Nextion::refresh()
  * \param objectName Name of the object to refresh
  * \return True if successful
  */
-bool Nextion::refresh(const char *objectName)
+bool Nextion::refresh(const String &objectName)
 {
-  size_t commandLen = 5 + strlen(objectName);
-  char commandBuffer[commandLen];
-  snprintf(commandBuffer, commandLen, "ref %s", objectName);
-  sendCommand(commandBuffer);
+  sendCommand("ref " + objectName);
   return checkCommandComplete();
 }
 
@@ -137,13 +134,14 @@ uint16_t Nextion::getBrightness()
  */
 bool Nextion::setBrightness(uint16_t val, bool persist)
 {
-  size_t commandLen = 10;
-  char commandBuffer[commandLen];
   if (persist)
-    snprintf(commandBuffer, commandLen, "dims=%d", val);
+  {
+    sendCommand("dims=" + String(val));
+  }
   else
-    snprintf(commandBuffer, commandLen, "dim=%d", val);
-  sendCommand(commandBuffer);
+  {
+    sendCommand("dim=" + String(val));
+  }
   return checkCommandComplete();
 }
 
@@ -174,10 +172,7 @@ uint8_t Nextion::getCurrentPage()
  */
 bool Nextion::clear(uint32_t colour)
 {
-  size_t commandLen = 9;
-  char commandBuffer[commandLen];
-  snprintf(commandBuffer, commandLen, "cls %ld", colour);
-  sendCommand(commandBuffer);
+  sendCommand("cls" + String(colour));
   return checkCommandComplete();
 }
 
@@ -190,10 +185,7 @@ bool Nextion::clear(uint32_t colour)
  */
 bool Nextion::drawPicture(uint16_t x, uint16_t y, uint8_t id)
 {
-  size_t commandLen = 21;
-  char commandBuffer[commandLen];
-  snprintf(commandBuffer, commandLen, "pic %d,%d,%d", x, y, id);
-  sendCommand(commandBuffer);
+  sendCommand("pic " + String(x) + "," + String(y) + "," + String(id));
   return checkCommandComplete();
 }
 
@@ -209,10 +201,8 @@ bool Nextion::drawPicture(uint16_t x, uint16_t y, uint8_t id)
 bool Nextion::drawPicture(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
                           uint8_t id)
 {
-  size_t commandLen = 35;
-  char commandBuffer[commandLen];
-  snprintf(commandBuffer, commandLen, "picq %d,%d,%d,%d,%d", x, y, w, h, id);
-  sendCommand(commandBuffer);
+  sendCommand("picq " + String(x) + "," + String(y) + "," + String(w) + ","
+    + String(h) + "," + String(id));
   return checkCommandComplete();
 }
 
@@ -232,17 +222,15 @@ bool Nextion::drawPicture(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
  * \return True if successful
  */
 bool Nextion::drawStr(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
-                      uint8_t fontID, char *str, uint32_t bgColour,
+                      uint8_t fontID, const String &str, uint32_t bgColour,
                       uint32_t fgColour, uint8_t bgType,
                       NextionFontAlignment xCentre,
                       NextionFontAlignment yCentre)
 {
-  size_t commandLen = 65 + strlen(str);
-  char commandBuffer[commandLen];
-  snprintf(commandBuffer, commandLen, "xstr %d,%d,%d,%d,%d,%ld,%ld,%d,%d,%d,%s",
-           x, y, w, h, fontID, fgColour, bgColour, xCentre, yCentre, bgType,
-           str);
-  sendCommand(commandBuffer);
+  sendCommand("xstr " + String(x) + "," + String(y) + "," + String(w) + "," + String(h)
+    + "," + String(fontID) + "," + String(fgColour) + "," + String(bgColour)
+    + "," + String(xCentre) + "," + String(yCentre) + "," + String(bgType)
+    + "," + str);
   return checkCommandComplete();
 }
 
@@ -258,11 +246,8 @@ bool Nextion::drawStr(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
 bool Nextion::drawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,
                        uint32_t colour)
 {
-  size_t commandLen = 35;
-  char commandBuffer[commandLen];
-  snprintf(commandBuffer, commandLen, "line %d,%d,%d,%d,%ld", x1, y1, x2, y2,
-           colour);
-  sendCommand(commandBuffer);
+  sendCommand("line " + String(x1) + "," + String(y1) + "," + String(x2) + ","
+    + String(y2) + "," + String(colour));
   return checkCommandComplete();
 }
 
@@ -279,15 +264,16 @@ bool Nextion::drawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,
 bool Nextion::drawRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
                        bool filled, uint32_t colour)
 {
-  size_t commandLen = 35;
-  char commandBuffer[commandLen];
   if (filled)
-    snprintf(commandBuffer, commandLen, "draw %d,%d,%d,%d,%ld", x, y, x + w,
-             y + h, colour);
+  {
+    sendCommand("draw " + String(x) + "," + String(y) + "," + String(x + w) + ","
+      + String(y + h) + "," + String(colour));
+  }
   else
-    snprintf(commandBuffer, commandLen, "fill %d,%d,%d,%d,%ld", x, y, w, h,
-             colour);
-  sendCommand(commandBuffer);
+  {
+    sendCommand("fill " + String(x) + "," + String(y) + "," + String(x + w) + ","
+      + String(y + h) + "," + String(colour));
+  }
   return checkCommandComplete();
 }
 
@@ -301,10 +287,8 @@ bool Nextion::drawRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
  */
 bool Nextion::drawCircle(uint16_t x, uint16_t y, uint16_t r, uint32_t colour)
 {
-  size_t commandLen = 27;
-  char commandBuffer[commandLen];
-  snprintf(commandBuffer, commandLen, "cir %d,%d,%d,%ld", x, y, r, colour);
-  sendCommand(commandBuffer);
+  sendCommand("cir " + String(x) + "," + String(y) + "," + String(r) + ","
+    + String(colour));
   return checkCommandComplete();
 }
 
@@ -338,10 +322,21 @@ void Nextion::registerTouchable(INextionTouchable *touchable)
  * \brief Sends a command to the device.
  * \param command Command to send
  */
-void Nextion::sendCommand(char *command)
+void Nextion::sendCommand(const String &command)
 {
   if (m_flushSerialBeforeTx)
+  {
+#ifdef ESP32
+    // Force clear the incoming buffer via read() instead of flush() due to a
+    // bug in how the ESP32 handles flush() when not using UART 0.
+    while(m_serialPort.available())
+    {
+      m_serialPort.read();
+    }
+#else
     m_serialPort.flush();
+#endif
+  }
 
   m_serialPort.print(command);
   m_serialPort.write(0xFF);
