@@ -43,7 +43,7 @@ public:
    * \return True if successful
    * \see INextionStringValued::getText
    */
-  bool setText(char *buffer)
+  bool setText(const String &buffer)
   {
     return setStringProperty("txt", buffer);
   }
@@ -56,9 +56,7 @@ public:
    */
   bool setTextAsNumber(uint32_t value)
   {
-    char buffer[8];
-    snprintf(buffer, 8, "%ld", value);
-    return setStringProperty("txt", buffer);
+    return setStringProperty("txt", String(value));
   }
 
   /*!
