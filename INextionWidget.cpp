@@ -91,7 +91,7 @@ bool INextionWidget::sendCommand(const String &format, ...)
 {
   va_list args;
   va_start(args, format);
-  m_nextion.sendCommand(format, args);
+  m_nextion.sendCommand(format.c_str(), args);
   va_end(args);
 }
 
@@ -99,7 +99,7 @@ bool INextionWidget::sendCommandWithWait(const String &format, ...)
 {
   va_list args;
   va_start(args, format);
-  m_nextion.sendCommand(format, args);
+  m_nextion.sendCommand(format.c_str(), args);
   va_end(args);
 
   return m_nextion.checkCommandComplete();
