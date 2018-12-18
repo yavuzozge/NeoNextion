@@ -44,7 +44,7 @@ uint8_t INextionWidget::getComponentID()
  */
 bool INextionWidget::setNumberProperty(const String &propertyName, uint32_t value)
 {
-  return sendCommand(m_name + "." + propertyName + "=" + String(value));
+  return sendCommandWithWait("%s.%s=%d", m_name.c_str(), propertyName.c_str(), value);
 }
 
 /*!
@@ -54,7 +54,7 @@ bool INextionWidget::setNumberProperty(const String &propertyName, uint32_t valu
  */
 uint32_t INextionWidget::getNumberProperty(const String &propertyName)
 {
-  sendCommand("get " + m_name + "." + propertyName, false);
+  sendCommand("get %s.%s", m_name.c_str(), propertyName.c_str());
   uint32_t id;
   if (m_nextion.receiveNumber(&id))
     return id;
@@ -70,7 +70,7 @@ uint32_t INextionWidget::getNumberProperty(const String &propertyName)
  */
 bool INextionWidget::setStringProperty(const String &propertyName, const String &value)
 {
-  return sendCommand(m_name + "." + propertyName + "=\"" + value + "\"");
+  return sendCommandWithWait("%s.%s=\"%s\"", m_name.c_str(), propertyName.c_str(), value.c_str());
 }
 
 /*!
@@ -83,16 +83,24 @@ bool INextionWidget::setStringProperty(const String &propertyName, const String 
 size_t INextionWidget::getStringProperty(const String &propertyName, char *value,
                                          size_t len)
 {
-  sendCommand("get " + m_name + "." + propertyName, false);
+  sendCommand("get %s.%s", m_name.c_str(), propertyName.c_str());
   return m_nextion.receiveString(value, len);
 }
 
-bool INextionWidget::sendCommand(const String &commandStr, bool checkComplete)
+bool INextionWidget::sendCommand(const String &format, ...)
 {
-  m_nextion.sendCommand(commandStr);
+  va_list args;
+  va_start(args, format);
+  m_nextion.sendCommand(format, args);
+  va_end(args);
+}
 
-  if (checkComplete)
-    return m_nextion.checkCommandComplete();
-  else
-    return true;
+bool INextionWidget::sendCommandWithWait(const String &format, ...)
+{
+  va_list args;
+  va_start(args, format);
+  m_nextion.sendCommand(format, args);
+  va_end(args);
+
+  return m_nextion.checkCommandComplete();
 }

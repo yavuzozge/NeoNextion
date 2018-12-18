@@ -66,6 +66,8 @@ public:
 
   void registerTouchable(INextionTouchable *touchable);
   void sendCommand(const String &command);
+  void sendCommand(const char *format, ...);
+  void sendCommand(const char *format, va_list args);
   bool checkCommandComplete();
   bool receiveNumber(uint32_t *number);
   size_t receiveString(char *buffer, size_t len);

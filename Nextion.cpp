@@ -88,7 +88,7 @@ bool Nextion::refresh()
  */
 bool Nextion::refresh(const String &objectName)
 {
-  sendCommand("ref " + objectName);
+  sendCommand("ref %s", objectName.c_str());
   return checkCommandComplete();
 }
 
@@ -136,11 +136,11 @@ bool Nextion::setBrightness(uint16_t val, bool persist)
 {
   if (persist)
   {
-    sendCommand("dims=" + String(val));
+    sendCommand("dims=%d", val);
   }
   else
   {
-    sendCommand("dim=" + String(val));
+    sendCommand("dim=%d", val);
   }
   return checkCommandComplete();
 }
@@ -172,7 +172,7 @@ uint8_t Nextion::getCurrentPage()
  */
 bool Nextion::clear(uint32_t colour)
 {
-  sendCommand("cls" + String(colour));
+  sendCommand("cls %d", colour);
   return checkCommandComplete();
 }
 
@@ -185,7 +185,7 @@ bool Nextion::clear(uint32_t colour)
  */
 bool Nextion::drawPicture(uint16_t x, uint16_t y, uint8_t id)
 {
-  sendCommand("pic " + String(x) + "," + String(y) + "," + String(id));
+  sendCommand("pic %d,%d,%d", x, y, id);
   return checkCommandComplete();
 }
 
@@ -201,8 +201,7 @@ bool Nextion::drawPicture(uint16_t x, uint16_t y, uint8_t id)
 bool Nextion::drawPicture(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
                           uint8_t id)
 {
-  sendCommand("picq " + String(x) + "," + String(y) + "," + String(w) + ","
-    + String(h) + "," + String(id));
+  sendCommand("picq %d,%d,%d,%d,%d", x, y, w, h, id);
   return checkCommandComplete();
 }
 
@@ -227,10 +226,7 @@ bool Nextion::drawStr(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
                       NextionFontAlignment xCentre,
                       NextionFontAlignment yCentre)
 {
-  sendCommand("xstr " + String(x) + "," + String(y) + "," + String(w) + "," + String(h)
-    + "," + String(fontID) + "," + String(fgColour) + "," + String(bgColour)
-    + "," + String(xCentre) + "," + String(yCentre) + "," + String(bgType)
-    + "," + str);
+  sendCommand("xstr %d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%s", x, y, w, h, fontID, fgColour, bgColour, xCentre, yCentre, bgType, str.c_str());
   return checkCommandComplete();
 }
 
@@ -246,8 +242,7 @@ bool Nextion::drawStr(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
 bool Nextion::drawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,
                        uint32_t colour)
 {
-  sendCommand("line " + String(x1) + "," + String(y1) + "," + String(x2) + ","
-    + String(y2) + "," + String(colour));
+  sendCommand("line %d,%d,%d,%d,%d", x1, y1, x2, y2, colour);
   return checkCommandComplete();
 }
 
@@ -266,13 +261,11 @@ bool Nextion::drawRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
 {
   if (filled)
   {
-    sendCommand("draw " + String(x) + "," + String(y) + "," + String(x + w) + ","
-      + String(y + h) + "," + String(colour));
+    sendCommand("draw %d,%d,%d,%d,%d", x, y, x + w, y + h, colour);
   }
   else
   {
-    sendCommand("fill " + String(x) + "," + String(y) + "," + String(x + w) + ","
-      + String(y + h) + "," + String(colour));
+    sendCommand("fill %d,%d,%d,%d,%d", x, y, x + w, y + h, colour);
   }
   return checkCommandComplete();
 }
@@ -287,8 +280,7 @@ bool Nextion::drawRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
  */
 bool Nextion::drawCircle(uint16_t x, uint16_t y, uint16_t r, uint32_t colour)
 {
-  sendCommand("cir " + String(x) + "," + String(y) + "," + String(r) + ","
-    + String(colour));
+  sendCommand("cir %d,%d,%d,%d", x, y, r, colour);
   return checkCommandComplete();
 }
 
@@ -342,6 +334,19 @@ void Nextion::sendCommand(const String &command)
   m_serialPort.write(0xFF);
   m_serialPort.write(0xFF);
   m_serialPort.write(0xFF);
+}
+
+void Nextion::sendCommand(const char *format, ...) {
+  va_list args;
+  va_start(args, format);
+  sendCommand(format, args);
+  va_end(args);
+}
+
+void Nextion::sendCommand(const char *format, va_list args) {
+  char buf[512] = {0};
+  vsnprintf_P(buf, sizeof(buf), format, args);
+  sendCommand(buf);
 }
 
 /*!
