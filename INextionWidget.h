@@ -38,7 +38,7 @@ protected:
   Nextion &m_nextion;    //!< Reference to the Nextion driver
   uint8_t m_pageID;      //!< ID of page this widget is on
   uint8_t m_componentID; //!< Component ID of this widget
-  const String &m_name;  //!< Name of this widget
+  const String m_name;  //!< Name of this widget
 };
 
 #endif

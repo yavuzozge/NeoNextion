@@ -345,8 +345,8 @@ void Nextion::sendCommand(const char *format, ...) {
 
 void Nextion::sendCommand(const char *format, va_list args) {
   char buf[512] = {0};
-  vsnprintf_P(buf, sizeof(buf), format, args);
-  sendCommand(buf);
+  vsnprintf(buf, sizeof(buf), format, args);
+  sendCommand(String(buf));
 }
 
 /*!
