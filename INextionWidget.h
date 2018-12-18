@@ -27,7 +27,7 @@ public:
   size_t getStringProperty(const String &propertyName, char *value, size_t len);
 
 protected:
-  bool sendCommand(const String &format, ...);
+  void sendCommand(const String &format, ...);
   bool sendCommandWithWait(const String &format, ...);
 
 protected:

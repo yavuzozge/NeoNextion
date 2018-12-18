@@ -87,7 +87,7 @@ size_t INextionWidget::getStringProperty(const String &propertyName, char *value
   return m_nextion.receiveString(value, len);
 }
 
-bool INextionWidget::sendCommand(const String &format, ...)
+void INextionWidget::sendCommand(const String &format, ...)
 {
   va_list args;
   va_start(args, format);
