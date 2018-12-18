@@ -69,9 +69,7 @@ public:
     char buffer[8];
     if (getStringProperty("txt", buffer, 8))
     {
-      uint32_t value;
-      sscanf(buffer, "%ld", &value);
-      return value;
+      return atol(buffer);
     }
     else
       return 0;
