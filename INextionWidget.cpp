@@ -107,7 +107,7 @@ bool INextionWidget::sendCommandWithWait(const String &format, ...)
 
 bool INextionWidget::setPropertyCommand(const String &command, uint32_t value)
 {
-  m_nextion.sendCommand("%s %s,%ld", command.c_str(), m_name.c_str, value);
+  m_nextion.sendCommand("%s %s,%ld", command.c_str(), m_name.c_str(), value);
   return m_nextion.checkCommandComplete();
 }
 
