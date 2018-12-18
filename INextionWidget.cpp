@@ -104,3 +104,19 @@ bool INextionWidget::sendCommandWithWait(const String &format, ...)
 
   return m_nextion.checkCommandComplete();
 }
+
+bool INextionWidget::setPropertyCommand(const String &command, uint32_t value)
+{
+  m_nextion.sendCommand("%s %s,%ld", command.c_str(), m_name.c_str, value);
+  return m_nextion.checkCommandComplete();
+}
+
+bool INextionWidget::show()
+{
+  return setPropertyCommand("vis", 1);
+}
+
+bool INextionWidget::hide()
+{
+  return setPropertyCommand("vis", 0);
+}

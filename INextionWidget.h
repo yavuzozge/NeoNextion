@@ -23,8 +23,12 @@ public:
 
   bool setNumberProperty(const String &propertyName, uint32_t value);
   uint32_t getNumberProperty(const String &propertyName);
+  bool setPropertyCommand(const String &command, uint32_t value);
   bool setStringProperty(const String &propertyName, const String &value);
   size_t getStringProperty(const String &propertyName, char *value, size_t len);
+
+  bool show();
+  bool hide();
 
 protected:
   void sendCommand(const String &format, ...);
