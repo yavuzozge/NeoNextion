@@ -1,6 +1,6 @@
 /*! \file */
 
-#include "INextionWidget.h"
+#include "NeoNextion/INextionWidget.h"
 
 /*!
  * \brief Create a new widget adapter.
@@ -119,4 +119,14 @@ bool INextionWidget::show()
 bool INextionWidget::hide()
 {
   return setPropertyCommand("vis", 0);
+}
+
+bool INextionWidget::enable()
+{
+  return setPropertyCommand("tsw", 1);
+}
+
+bool INextionWidget::disable()
+{
+  return setPropertyCommand("tsw", 0);
 }
