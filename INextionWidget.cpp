@@ -1,6 +1,6 @@
 /*! \file */
 
-#include "NeoNextion/INextionWidget.h"
+#include "INextionWidget.h"
 
 /*!
  * \brief Create a new widget adapter.
@@ -77,14 +77,12 @@ bool INextionWidget::setStringProperty(const String &propertyName, const String 
  * \brief Gets the value of a string property of this widget.
  * \param propertyName Name of the property
  * \param value Pointer to char array to store result in
- * \param len Maximum length of value
  * \return Actual length of value
  */
-size_t INextionWidget::getStringProperty(const String &propertyName, char *value,
-                                         size_t len)
+size_t INextionWidget::getStringProperty(const String &propertyName, String &buffer)
 {
   sendCommand("get %s.%s", m_name.c_str(), propertyName.c_str());
-  return m_nextion.receiveString(value, len);
+  return m_nextion.receiveString(value);
 }
 
 void INextionWidget::sendCommand(const String &format, ...)
