@@ -82,7 +82,7 @@ bool INextionWidget::setStringProperty(const String &propertyName, const String 
 size_t INextionWidget::getStringProperty(const String &propertyName, String &buffer)
 {
   sendCommand("get %s.%s", m_name.c_str(), propertyName.c_str());
-  return m_nextion.receiveString(value);
+  return m_nextion.receiveString(buffer);
 }
 
 void INextionWidget::sendCommand(const String &format, ...)
