@@ -2,6 +2,13 @@
 
 #include "Nextion.h"
 #include "INextionTouchable.h"
+#include <FS.h>
+#include <MD5Builder.h>
+#include <vector>
+
+#ifndef MIN
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#endif
 
 /*!
  * \brief Creates a new device driver.
@@ -70,6 +77,16 @@ void Nextion::poll()
       }
     }
   }
+}
+
+/*!
+ * \brief Resets the device.
+ * \return True if successful
+ */
+bool Nextion::reset()
+{
+  sendCommand("rest");
+  return checkCommandComplete();
 }
 
 /*!
@@ -227,7 +244,8 @@ bool Nextion::drawStr(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
                       NextionFontAlignment xCentre,
                       NextionFontAlignment yCentre)
 {
-  sendCommand("xstr %d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%s", x, y, w, h, fontID, fgColour, bgColour, xCentre, yCentre, bgType, str.c_str());
+  sendCommand("xstr %d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%s", x, y, w, h, fontID,
+              fgColour, bgColour, xCentre, yCentre, bgType, str.c_str());
   return checkCommandComplete();
 }
 
@@ -321,7 +339,7 @@ void Nextion::sendCommand(const String &command)
 {
   if (m_flushSerialBeforeTx)
   {
-    while(m_serialPort.available())
+    while (m_serialPort.available())
     {
       m_serialPort.read();
     }
@@ -360,17 +378,20 @@ bool Nextion::checkCommandComplete()
 
   if (bytesRead != sizeof(temp))
   {
-    printf("\nNextion::checkCommandComplete, not enough data available: %d vs %d\n",
-      bytesRead, sizeof(temp));
+    printf("\nNextion::checkCommandComplete, not enough data available: %d vs "
+           "%d\n",
+           bytesRead, sizeof(temp));
   }
-  if (temp[0] == NEX_RET_CMD_FINISHED && temp[1] == 0xFF && temp[2] == 0xFF && temp[3] == 0xFF)
+  if (temp[0] == NEX_RET_CMD_FINISHED && temp[1] == 0xFF && temp[2] == 0xFF &&
+      temp[3] == 0xFF)
   {
     ret = true;
   }
   else
   {
-    printf("\nNextion::checkCommandComplete, incomplete command?: %02x %02x %02x %02x\n",
-      temp[0], temp[1], temp[2], temp[3]);
+    printf("\nNextion::checkCommandComplete, incomplete command?: %02x %02x "
+           "%02x %02x\n",
+           temp[0], temp[1], temp[2], temp[3]);
   }
 
   return ret;
@@ -425,9 +446,9 @@ size_t Nextion::receiveString(String &buffer, bool stringHeader)
       {
         if (c == NEX_RET_CMD_FINISHED)
         {
-          // it appears that we received a "previous command completed successfully"
-          // response. Discard the next three bytes which will be 0xFF so we can
-          // advance to the actual response we are wanting.
+          // it appears that we received a "previous command completed
+          // successfully" response. Discard the next three bytes which will be
+          // 0xFF so we can advance to the actual response we are wanting.
           m_serialPort.read();
           m_serialPort.read();
           m_serialPort.read();
@@ -452,10 +473,127 @@ size_t Nextion::receiveString(String &buffer, bool stringHeader)
       }
     }
 
-    if (flag_count >= 3) {
+    if (flag_count >= 3)
+    {
       break;
     }
   }
   buffer.trim();
   return buffer.length();
+}
+
+bool Nextion::waitForFirmwareChunkAck() const
+{
+  uint64_t start = millis();
+  int read = -1;
+  bool success = false;
+  while (read == -1 && millis() - start <= 500)
+  {
+    if (m_serialPort.available())
+    {
+      read = m_serialPort.read();
+      return read == 5;
+    }
+  }
+  return false;
+}
+
+bool Nextion::uploadFirmware(
+  Stream &stream, 
+  size_t size,
+  uint32_t baudrate,
+  String &md5Out,
+  size_t bufferSize)
+{
+  const size_t chunkSize = 4096;
+  md5Out = "";
+
+  String cmd = String("whmi-wri ");
+  cmd += size;
+  cmd += ',';
+  cmd += baudrate;
+  cmd += ",res0";
+
+  Serial.printf("Sending data of size %u\n", size);
+  Serial.printf("cmd=%s\n", cmd.c_str());
+  sendCommand(cmd);
+
+  if (!waitForFirmwareChunkAck())
+  {
+    Serial.println("Expected ACK for whmi-wri not received, aborting.");
+    return false;
+  }
+
+  MD5Builder md5;
+  md5.begin();
+
+  std::vector<uint8_t> buffer(bufferSize);
+  size_t read = 0;
+  size_t written = 0;
+  size_t totalWritten = 0;
+  size_t chunkRemaining = chunkSize;
+  while (true)
+  {
+    read = stream.readBytes(&buffer[0], MIN(chunkRemaining, buffer.size()));
+    if (read > 0)
+    {
+      written = m_serialPort.write(&buffer[0], read);
+      totalWritten += written;
+      if (written != read)
+      {
+        Serial.printf("Failed to write all the bytes. Written: %u\n", written);
+        return false;
+      }
+      md5.add(&buffer[0], read);
+    }
+    else if (read == 0)
+    {
+      break;
+    }
+
+    chunkRemaining -= read;
+    if (chunkRemaining == 0 && totalWritten != size)
+    {
+      chunkRemaining = chunkSize;
+      if (!waitForFirmwareChunkAck())
+      {
+        Serial.println("Expected chunk ACK not received, aborting.");
+        return false;
+      }
+    }
+  }
+
+  if (!waitForFirmwareChunkAck())
+  {
+    Serial.println("Expected final ACK not received, aborting.");
+    return false;
+  }
+
+  if (totalWritten == size)
+  {
+    Serial.printf("Stream sent. Total bytes written: %u, expected size: %u\n", totalWritten, size);
+
+    md5.calculate();
+    md5Out = md5.toString();
+
+    Serial.println("Waiting for NEX_RET_EVENT_LAUNCHED");
+    uint8_t launchedEvent[] = {NEX_RET_EVENT_LAUNCHED, 0xFF, 0xFF, 0xFF};
+    uint64_t start = millis();
+    while (millis() - start < 20000)
+    {
+      if (m_serialPort.find(launchedEvent, sizeof(launchedEvent)))
+      {
+        Serial.println("Launch event detected");
+        return true;
+      }
+    }
+
+    Serial.println("Launch event was not detected");
+    return false;
+  }
+  else
+  {
+    Serial.println("Stream terminated prematurely, aborting");
+    return false;
+  }
 }

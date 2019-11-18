@@ -9,6 +9,7 @@ extern char *itoa(int a, char *buffer, unsigned char radix);
 #else
 #include <Arduino.h>
 #endif
+#include <FS.h>
 
 #include <WString.h>
 
@@ -37,6 +38,7 @@ public:
 
   bool init();
   void poll();
+  bool reset();
 
   bool refresh();
   bool refresh(const String &objectName);
@@ -68,15 +70,19 @@ public:
   void sendCommand(const String &command);
   void sendCommand(const char *format, ...);
   void sendCommand(const char *format, va_list args);
+  bool checkCommandComplete(NextionValue event);
   bool checkCommandComplete();
   bool receiveNumber(uint32_t *number);
   size_t receiveString(String &buffer, bool stringHeader=true);
+  bool uploadFirmware(Stream &stream, size_t size, uint32_t baudrate, String& md5Out, size_t bufferSize = 128);
 
 private:
   Stream &m_serialPort;       //!< Serial port device is attached to
   uint32_t m_timeout;         //!< Serial communication timeout in ms
   bool m_flushSerialBeforeTx; //!< Flush serial port before transmission
   ITouchableListItem *m_touchableList; //!< LInked list of INextionTouchable
+
+  bool waitForFirmwareChunkAck() const;
 };
 
 #endif
