@@ -20,7 +20,7 @@ public:
 
   bool processEvent(uint8_t pageID, uint8_t componentID, uint8_t eventType);
 
-  bool attachCallback(NextionCallbackFunctionHandler::NextionFunction cb);
+  bool attachCallback(const NextionCallbackFunctionHandler::NextionFunction &cb);
   bool attachCallback(INextionCallback *obj);
   void detachCallback();
 

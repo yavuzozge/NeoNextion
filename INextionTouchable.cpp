@@ -53,7 +53,7 @@ bool INextionTouchable::processEvent(uint8_t pageID, uint8_t componentID,
  * \see INextionTouchable::detachCallback
  */
 bool INextionTouchable::attachCallback(
-    NextionCallbackFunctionHandler::NextionFunction function)
+    const NextionCallbackFunctionHandler::NextionFunction &function)
 {
   if (!function)
     return false;

@@ -3,6 +3,7 @@
 #ifndef __NEONEXTION_NEXTIONCALLBACKFUNCTIONHANDLER
 #define __NEONEXTION_NEXTIONCALLBACKFUNCTIONHANDLER
 
+#include <functional>
 #include "INextionCallback.h"
 
 /*!
@@ -16,13 +17,13 @@ public:
    * \typedef NextionFunction
    * \brief Event handler function for display events.
    */
-  typedef void (*NextionFunction)(NextionEventType, INextionTouchable *);
+  typedef std::function<void(NextionEventType, INextionTouchable *)> NextionFunction;
 
   /*!
    * \brief Creates a new function pointer callback handler.
    * \param f Pointer to callback function
    */
-  NextionCallbackFunctionHandler(NextionFunction f)
+  NextionCallbackFunctionHandler(const NextionFunction &f)
       : m_function(f)
   {
   }
