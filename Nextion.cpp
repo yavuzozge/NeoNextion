@@ -508,7 +508,7 @@ bool Nextion::uploadFirmware(
   const size_t chunkSize = 4096;
   md5Out = "";
 
-  String cmd = String("whmi-wri ");
+  String cmd("whmi-wri ");
   cmd += size;
   cmd += ',';
   cmd += baudrate;
@@ -517,6 +517,13 @@ bool Nextion::uploadFirmware(
   Serial.printf("Sending data of size %u\n", size);
   Serial.printf("cmd=%s\n", cmd.c_str());
   sendCommand(cmd);
+
+  // Flush the serial port first, regardless since 
+  // updating the firmware successfully takes the highest priority.
+  while (m_serialPort.available())
+  {
+    m_serialPort.read();
+  }
 
   if (!waitForFirmwareChunkAck())
   {
