@@ -14,6 +14,13 @@ INextionTouchable::INextionTouchable(Nextion &nex, uint8_t page,
 }
 
 /*!
+ * \brief dtor
+INextionTouchable::~INextionTouchable()
+{
+  m_nextion.unregisterTouchable(this);
+}
+
+/*!
  * \brief Processes a touch event.
  * \param pageID Page ID of touch event
  * \param componentID Component ID of touch event

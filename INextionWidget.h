@@ -17,7 +17,9 @@ class INextionWidget
 public:
   INextionWidget(Nextion &nex, uint8_t page, uint8_t component,
                  const String &name);
+  virtual ~INextionWidget();
 
+  void setInitialVisibility(bool visible);
   uint8_t getPageID();
   uint8_t getComponentID();
 
@@ -27,11 +29,9 @@ public:
   bool setStringProperty(const String &propertyName, const String &value);
   size_t getStringProperty(const String &propertyName, String &buffer);
 
-  bool show();
-  bool hide();
-  bool enable();
-  bool disable();
-
+  bool setVisible(bool visible);
+  bool enable(bool enable);
+  
 protected:
   void sendCommand(const String &format, ...);
   bool sendCommandWithWait(const String &format, ...);
@@ -41,6 +41,7 @@ protected:
   uint8_t m_pageID;      //!< ID of page this widget is on
   uint8_t m_componentID; //!< Component ID of this widget
   const String m_name;  //!< Name of this widget
+  bool m_visible;
 };
 
 #endif

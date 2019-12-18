@@ -15,7 +15,26 @@ INextionWidget::INextionWidget(Nextion &nex, uint8_t page, uint8_t component,
     , m_pageID(page)
     , m_componentID(component)
     , m_name(name)
+    , m_visible(true)
 {
+}
+
+/*!
+ * ftor
+ */
+INextionWidget::~INextionWidget()
+{
+}
+
+/*!
+ * \brief Sets the initial visibility of the control. Sometimes a control can be hidden
+ * when the page is getting initialized. To be able to track visibility correctly, such
+ * controls would need to be initialized using this method
+ * \param visible initial visibility
+ */
+void INextionWidget::setInitialVisibility(bool visible)
+{
+  m_visible = visible;
 }
 
 /*!
@@ -109,22 +128,22 @@ bool INextionWidget::setPropertyCommand(const String &command, uint32_t value)
   return m_nextion.checkCommandComplete();
 }
 
-bool INextionWidget::show()
+bool INextionWidget::setVisible(bool visible)
 {
-  return setPropertyCommand("vis", 1);
+  if(visible == m_visible)
+  {
+    return true;
+  }
+
+  if(setPropertyCommand("vis", visible ? 1 : 0))
+  {
+    m_visible = visible;
+    return true;
+  }
+  return false;
 }
 
-bool INextionWidget::hide()
+bool INextionWidget::enable(bool enable)
 {
-  return setPropertyCommand("vis", 0);
-}
-
-bool INextionWidget::enable()
-{
-  return setPropertyCommand("tsw", 1);
-}
-
-bool INextionWidget::disable()
-{
-  return setPropertyCommand("tsw", 0);
+  return setPropertyCommand("tsw", enable ? 1 : 0);
 }

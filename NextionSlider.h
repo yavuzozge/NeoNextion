@@ -17,16 +17,12 @@ class NextionSlider : public INextionTouchable,
                       public INextionNumericalValued
 {
 public:
-  /*!
-   * \copydoc INextionWidget::INextionWidget
-   */
-  NextionSlider(Nextion &nex, uint8_t page, uint8_t component, const String &name)
-      : INextionWidget(nex, page, component, name)
-      , INextionTouchable(nex, page, component, name)
-      , INextionColourable(nex, page, component, name)
-      , INextionNumericalValued(nex, page, component, name)
-  {
-  }
+  NextionSlider(Nextion &nex, uint8_t page, uint8_t component, const String &name);
+
+  uint32_t getMinValue();
+  bool setMinValue(uint32_t value);
+  uint32_t getMaxValue();
+  bool setMaxValue(uint32_t value);
 };
 
 #endif

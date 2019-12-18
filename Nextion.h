@@ -12,20 +12,12 @@ extern char *itoa(int a, char *buffer, unsigned char radix);
 #include <FS.h>
 
 #include <WString.h>
+#include <forward_list>
+#include <list>
 
 #include "NextionTypes.h"
 
 class INextionTouchable;
-
-/*!
- * \struct ITouchableListItem
- * \brief Linked list node for INextionTouchable objects.
- */
-struct ITouchableListItem
-{
-  INextionTouchable *item;  //!< Pointer to stored INextionTouchable
-  ITouchableListItem *next; //!< Pointer to next list node
-};
 
 /*!
  * \class Nextion
@@ -34,7 +26,7 @@ struct ITouchableListItem
 class Nextion
 {
 public:
-  Nextion(Stream &stream, bool flushSerialBeforeTx = true);
+  Nextion(Stream &stream, uint16_t timeout = 1000);
 
   bool init();
   void poll();
@@ -67,21 +59,26 @@ public:
   bool drawCircle(uint16_t x, uint16_t y, uint16_t r, uint32_t colour);
 
   void registerTouchable(INextionTouchable *touchable);
+  void unregisterTouchable(INextionTouchable *touchable);
   void sendCommand(const String &command);
   void sendCommand(const char *format, ...);
   void sendCommand(const char *format, va_list args);
-  bool checkCommandComplete(NextionValue event);
   bool checkCommandComplete();
   bool receiveNumber(uint32_t *number);
-  size_t receiveString(String &buffer, bool stringHeader=true);
+  size_t receiveString(String &buffer);
   bool uploadFirmware(Stream &stream, size_t size, uint32_t baudrate, String& md5Out, size_t bufferSize = 128);
 
 private:
   Stream &m_serialPort;       //!< Serial port device is attached to
-  uint32_t m_timeout;         //!< Serial communication timeout in ms
-  bool m_flushSerialBeforeTx; //!< Flush serial port before transmission
-  ITouchableListItem *m_touchableList; //!< LInked list of INextionTouchable
+  uint64_t m_timeout;
+  std::forward_list<INextionTouchable*> m_touchableList; //!< Linked list of INextionTouchable
+  std::vector<uint8_t> m_buffer;
+  std::vector<uint8_t> m_solicitedBuffer;
+  std::vector<uint8_t> m_unsolicitedBuffer;
 
+  void readSolicited(const std::function<void(const std::vector<uint8_t> &buffer, std::size_t length)> &callback);
+  void readMessage(bool waitForSolicited);
+  void processUnsolicited();
   bool waitForFirmwareChunkAck() const;
 };
 
