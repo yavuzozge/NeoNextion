@@ -20,7 +20,7 @@ INextionWidget::INextionWidget(Nextion &nex, uint8_t page, uint8_t component,
 }
 
 /*!
- * ftor
+ * dtor
  */
 INextionWidget::~INextionWidget()
 {
