@@ -17,18 +17,30 @@ NextionPage::NextionPage(Nextion &nex, uint8_t page, uint8_t component,
  */
 bool NextionPage::show()
 {
-  if(!isShown())
+  bool shown;
+  if (!isShown(shown))
   {
-    return sendCommandWithWait("page %s", m_name.c_str());
+    return false;
   }
-  return true;
+  if(shown)
+  {
+    return true;
+  }
+  return sendCommandWithWait("page %s", m_name.c_str());
 }
 
 /*!
  * \brief Determines if this page is currently displayed.
- * \return True if displayed
+ * \param shown Whether the page is shown
+ * \return True if successful
  */
-bool NextionPage::isShown()
+bool NextionPage::isShown(bool shown)
 {
-  return m_nextion.getCurrentPage() == m_pageID;
+  uint8_t id;
+  if(m_nextion.getCurrentPage(id))
+  {
+    shown = id == m_pageID;
+    return true;
+  }
+  return false;
 }

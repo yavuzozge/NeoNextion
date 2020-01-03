@@ -1,13 +1,12 @@
 /*! \file */
 
-#ifndef __NEONEXTION_NEXTIONTEXT
-#define __NEONEXTION_NEXTIONTEXT
+#pragma once
 
-#include "Nextion.h"
-#include "INextionTouchable.h"
 #include "INextionColourable.h"
-#include "INextionStringValued.h"
 #include "INextionFontStyleable.h"
+#include "INextionStringValued.h"
+#include "INextionTouchable.h"
+#include "Nextion.h"
 
 /*!
  * \class NextionText
@@ -31,5 +30,3 @@ public:
   {
   }
 };
-
-#endif

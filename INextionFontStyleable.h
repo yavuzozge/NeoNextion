@@ -1,10 +1,9 @@
 /*! \file */
 
-#ifndef __NEONEXTION_INEXTIONFONTSTYLEABLE
-#define __NEONEXTION_INEXTIONFONTSTYLEABLE
+#pragma once
 
-#include "Nextion.h"
 #include "INextionWidget.h"
+#include "Nextion.h"
 #include "NextionTypes.h"
 
 /*!
@@ -18,15 +17,13 @@ public:
                         const String &name);
 
   bool setFont(uint8_t id, bool refresh = true);
-  uint8_t getFont();
+  bool getFont(uint8_t &id);
 
   bool setHAlignment(NextionFontAlignment align, bool refresh = true);
-  NextionFontAlignment getHAlignment();
+  bool getHAlignment(NextionFontAlignment &align);
 
   bool setVAlignment(NextionFontAlignment align, bool refresh = true);
-  NextionFontAlignment getVAlignment();
+  bool getVAlignment(NextionFontAlignment &align);
 
   bool afterSet(bool result, bool refresh);
 };
-
-#endif

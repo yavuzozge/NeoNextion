@@ -1,7 +1,6 @@
 /*! \file */
 
-#ifndef __NEONEXTION_INEXTIONTOUCHABLE
-#define __NEONEXTION_INEXTIONTOUCHABLE
+#pragma once
 
 #include "Nextion.h"
 #include "INextionWidget.h"
@@ -28,5 +27,3 @@ public:
 private:
   INextionCallback *m_callback;
 };
-
-#endif

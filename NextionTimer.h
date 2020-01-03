@@ -1,10 +1,9 @@
 /*! \file */
 
-#ifndef __NEONEXTION_NEXTIONTIMER
-#define __NEONEXTION_NEXTIONTIMER
+#pragma once
 
-#include "Nextion.h"
 #include "INextionTouchable.h"
+#include "Nextion.h"
 
 /*!
  * \class NextionTimer
@@ -13,13 +12,12 @@
 class NextionTimer : public INextionTouchable
 {
 public:
-  NextionTimer(Nextion &nex, uint8_t page, uint8_t component, const String &name);
+  NextionTimer(Nextion &nex, uint8_t page, uint8_t component,
+               const String &name);
 
-  uint32_t getCycle();
+  bool getCycle(uint32_t &cycle);
   bool setCycle(uint32_t cycle);
 
   bool enable();
   bool disable();
 };
-
-#endif

@@ -26,12 +26,19 @@ bool INextionFontStyleable::setFont(uint8_t id, bool refresh)
 
 /*!
  * \brief Gets the active font for the text.
- * \return Font ID (may return 0 in event of error)
+ * \param id Font ID
+ * \return True if successful
  * \see INextionFontStyleable::setFont
  */
-uint8_t INextionFontStyleable::getFont()
+bool INextionFontStyleable::getFont(uint8_t &id)
 {
-  return getNumberProperty("font");
+  uint32_t value;
+  if (getNumberProperty("font", value))
+  {
+    id = value;
+    return true;
+  }
+  return false;
 }
 
 /*!
@@ -49,12 +56,19 @@ bool INextionFontStyleable::setHAlignment(NextionFontAlignment align,
 
 /*!
  * \brief Gets the horizontal alignment of the text.
- * \return Alignment
+ * \param align Alignment
+ * \return True if successful
  * \see INextionFontStyleable::setHAlignment
  */
-NextionFontAlignment INextionFontStyleable::getHAlignment()
+bool INextionFontStyleable::getHAlignment(NextionFontAlignment &align)
 {
-  return (NextionFontAlignment)getNumberProperty("xcen");
+  uint32_t value;
+  if (getNumberProperty("xcen", value))
+  {
+    align = static_cast<NextionFontAlignment>(value);
+    return true;
+  }
+  return false;
 }
 
 /*!
@@ -72,12 +86,19 @@ bool INextionFontStyleable::setVAlignment(NextionFontAlignment align,
 
 /*!
  * \brief Gets the vertical alignment of the text.
- * \return Alignment
+ * \param align Alignment
+ * \return True if successful
  * \see INextionFontStyleable::setVAlignment
  */
-NextionFontAlignment INextionFontStyleable::getVAlignment()
+bool INextionFontStyleable::getVAlignment(NextionFontAlignment &align)
 {
-  return (NextionFontAlignment)getNumberProperty("ycen");
+  uint32_t value;
+  if (getNumberProperty("ycen", value))
+  {
+    align = static_cast<NextionFontAlignment>(value);
+    return true;
+  }
+  return false;
 }
 
 /*!

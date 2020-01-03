@@ -1,11 +1,10 @@
 /*! \file */
 
-#ifndef __NEONEXTION_NEXTIONHOTSPOT
-#define __NEONEXTION_NEXTIONHOTSPOT
+#pragma once
 
-#include "Nextion.h"
-#include "INextionWidget.h"
 #include "INextionTouchable.h"
+#include "INextionWidget.h"
+#include "Nextion.h"
 
 /*!
  * \class NextionHotspot
@@ -24,5 +23,3 @@ public:
   {
   }
 };
-
-#endif

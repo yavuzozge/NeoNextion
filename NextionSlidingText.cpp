@@ -20,9 +20,15 @@ bool NextionSlidingText::setScrolling(bool scroll)
   return setNumberProperty("en", scroll);
 }
 
-bool NextionSlidingText::isScrolling()
+bool NextionSlidingText::isScrolling(bool &scroll)
 {
-  return (bool)getNumberProperty("en");
+  uint32_t value;
+  if (getNumberProperty("en", value))
+  {
+    scroll = value;
+    return true;
+  }
+  return false;
 }
 
 bool NextionSlidingText::setScrollDirection(NextionScrollDirection direction)
@@ -30,9 +36,15 @@ bool NextionSlidingText::setScrollDirection(NextionScrollDirection direction)
   return setNumberProperty("dir", direction);
 }
 
-NextionScrollDirection NextionSlidingText::getScrollDirection()
+bool NextionSlidingText::getScrollDirection(NextionScrollDirection &direction)
 {
-  return (NextionScrollDirection)getNumberProperty("dir");
+  uint32_t value;
+  if (getNumberProperty("dir", value))
+  {
+    direction = static_cast<NextionScrollDirection>(value);
+    return true;
+  }
+  return false;
 }
 
 bool NextionSlidingText::setScrollDistance(uint32_t distance)
@@ -40,9 +52,9 @@ bool NextionSlidingText::setScrollDistance(uint32_t distance)
   return setNumberProperty("dis", distance);
 }
 
-uint32_t NextionSlidingText::getScrollDistance()
+bool NextionSlidingText::getScrollDistance(uint32_t &distance)
 {
-  return getNumberProperty("dis");
+  return getNumberProperty("dis", distance);
 }
 
 bool NextionSlidingText::setScrollDelay(uint32_t delay)
@@ -50,7 +62,7 @@ bool NextionSlidingText::setScrollDelay(uint32_t delay)
   return setNumberProperty("tim", delay);
 }
 
-uint32_t NextionSlidingText::getScrollDelay()
+bool NextionSlidingText::getScrollDelay(uint32_t &delay)
 {
-  return getNumberProperty("tim");
+  return getNumberProperty("tim", delay);
 }

@@ -1,10 +1,9 @@
 /*! \file */
 
-#ifndef __NEONEXTION_INEXTIONNUMERICALVALUED
-#define __NEONEXTION_INEXTIONNUMERICALVALUED
+#pragma once
 
-#include "Nextion.h"
 #include "INextionWidget.h"
+#include "Nextion.h"
 #include "NextionTypes.h"
 
 /*!
@@ -27,24 +26,23 @@ public:
 
   /*!
    * \brief Gets the numerical value.
-   * \return Value
-   * \see INextionNumericalValued::setValue
+   * \param value Resulting value
+   * \return True if successful
+   * \see INextionNumericalValued::getValue
    */
-  uint32_t getValue()
+  bool getValue(uint32_t &value)
   {
-    return getNumberProperty("val");
+    return getNumberProperty("val", value);
   }
 
   /*!
    * \brief Sets the numerical value.
    * \param value Value
    * \return True if successful
-   * \see INextionNumericalValued::getValue
+   * \see INextionNumericalValued::setValue
    */
   bool setValue(uint32_t value)
   {
     return setNumberProperty("val", value);
   }
 };
-
-#endif

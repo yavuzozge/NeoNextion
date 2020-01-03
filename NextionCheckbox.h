@@ -1,12 +1,11 @@
 /*! \file */
 
-#ifndef __NEONEXTION_NEXTIONCHECKBOX
-#define __NEONEXTION_NEXTIONCHECKBOX
+#pragma once
 
-#include "Nextion.h"
-#include "INextionTouchable.h"
-#include "INextionColourable.h"
 #include "INextionBooleanValued.h"
+#include "INextionColourable.h"
+#include "INextionTouchable.h"
+#include "Nextion.h"
 
 /*!
  * \class NextionCheckbox
@@ -29,5 +28,3 @@ public:
   {
   }
 };
-
-#endif

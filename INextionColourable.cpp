@@ -25,12 +25,13 @@ bool INextionColourable::setForegroundColour(uint32_t colour, bool refresh)
 
 /*!
  * \brief Gets the normal foreground colour.
- * \return Colour (may also return 0 in case of error)
+ * \param colour Colour
+ * \return True if successful
  * \see INextionColourable::setForegroundColour
  */
-uint32_t INextionColourable::getForegroundColour()
+bool INextionColourable::getForegroundColour(uint32_t &colour)
 {
-  return getColour("pco");
+  return getColour("pco", colour);
 }
 
 /*!
@@ -47,12 +48,13 @@ bool INextionColourable::setEventForegroundColour(uint32_t colour, bool refresh)
 
 /*!
  * \brief Gets the foreground colour when a touch event is active.
- * \return Colour (may also return 0 in case of error)
+ * \param colour Colour
+ * \return True if successful
  * \see INextionColourable::setEventForegroundColour
  */
-uint32_t INextionColourable::getEventForegroundColour()
+bool INextionColourable::getEventForegroundColour(uint32_t &colour)
 {
-  return getColour("pco2");
+  return getColour("pco2", colour);
 }
 
 /*!
@@ -69,12 +71,13 @@ bool INextionColourable::setBackgroundColour(uint32_t colour, bool refresh)
 
 /*!
  * \brief Gets the normal background colour.
- * \return Colour (may also return 0 in case of error)
+ * \param colour Colour
+ * \return True if successful
  * \see INextionColourable::setBackgroundColour
  */
-uint32_t INextionColourable::getBackgroundColour()
+bool INextionColourable::getBackgroundColour(uint32_t &colour)
 {
-  return getColour("bco");
+  return getColour("bco", colour);
 }
 
 /*!
@@ -91,12 +94,13 @@ bool INextionColourable::setEventBackgroundColour(uint32_t colour, bool refresh)
 
 /*!
  * \brief Sets the background colour when a touch event is active.
- * \return Colour (may also return 0 in case of error)
+ * \param colour Colour
+ * \return True if successful
  * \see INextionColourable::setEventBackgroundColour
  */
-uint32_t INextionColourable::getEventBackgroundColour()
+bool INextionColourable::getEventBackgroundColour(uint32_t &colour)
 {
-  return getColour("bco2");
+  return getColour("bco2", colour);
 }
 
 /*!
@@ -106,7 +110,8 @@ uint32_t INextionColourable::getEventBackgroundColour()
  * \param refresh If the widget should be refreshed
  * \return True if successful
  */
-bool INextionColourable::setColour(const String &type, uint32_t colour, bool refresh)
+bool INextionColourable::setColour(const String &type, uint32_t colour,
+                                   bool refresh)
 {
   return afterSet(setNumberProperty(type, colour), refresh);
 }
@@ -114,12 +119,13 @@ bool INextionColourable::setColour(const String &type, uint32_t colour, bool ref
 /*!
  * \brief Gets a colour by its property name.
  * \param type Property name
- * \return Colour (may also return 0 in case of error)
+ * \param colour Colour
+ * \return True if successful
  * \see INextionColourable::setColour
  */
-uint32_t INextionColourable::getColour(const String &type)
+bool INextionColourable::getColour(const String &type, uint32_t &colour)
 {
-  return getNumberProperty(type);
+  return getNumberProperty(type, colour);
 }
 
 /*!

@@ -1,10 +1,9 @@
 /*! \file */
 
-#ifndef __NEONEXTION_INEXTIONSTRINGVALUED
-#define __NEONEXTION_INEXTIONSTRINGVALUED
+#pragma once
 
-#include "Nextion.h"
 #include "INextionWidget.h"
+#include "Nextion.h"
 #include "NextionTypes.h"
 
 /*!
@@ -73,5 +72,3 @@ public:
     return 0;
   }
 };
-
-#endif

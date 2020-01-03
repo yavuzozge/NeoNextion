@@ -1,12 +1,11 @@
 /*! \file */
 
-#ifndef __NEONEXTION_NEXTIONSLIDER
-#define __NEONEXTION_NEXTIONSLIDER
+#pragma once
 
-#include "Nextion.h"
-#include "INextionTouchable.h"
 #include "INextionColourable.h"
 #include "INextionNumericalValued.h"
+#include "INextionTouchable.h"
+#include "Nextion.h"
 
 /*!
  * \class NextionSlider
@@ -17,12 +16,11 @@ class NextionSlider : public INextionTouchable,
                       public INextionNumericalValued
 {
 public:
-  NextionSlider(Nextion &nex, uint8_t page, uint8_t component, const String &name);
+  NextionSlider(Nextion &nex, uint8_t page, uint8_t component,
+                const String &name);
 
-  uint32_t getMinValue();
+  bool getMinValue(uint32_t &value);
   bool setMinValue(uint32_t value);
-  uint32_t getMaxValue();
+  bool getMaxValue(uint32_t &value);
   bool setMaxValue(uint32_t value);
 };
-
-#endif

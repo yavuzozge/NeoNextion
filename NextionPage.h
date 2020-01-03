@@ -1,10 +1,9 @@
 /*! \file */
 
-#ifndef __NEONEXTION_NEXTIONPAGE
-#define __NEONEXTION_NEXTIONPAGE
+#pragma once
 
-#include "Nextion.h"
 #include "INextionWidget.h"
+#include "Nextion.h"
 
 /*!
  * \class NextionPage
@@ -13,10 +12,9 @@
 class NextionPage : public INextionWidget
 {
 public:
-  NextionPage(Nextion &nex, uint8_t page, uint8_t component, const String &name);
+  NextionPage(Nextion &nex, uint8_t page, uint8_t component,
+              const String &name);
 
   bool show();
-  bool isShown();
+  bool isShown(bool shown);
 };
-
-#endif

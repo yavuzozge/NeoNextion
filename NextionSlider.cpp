@@ -5,21 +5,23 @@
 /*!
  * \copydoc INextionWidget::INextionWidget
  */
-NextionSlider::NextionSlider(Nextion &nex, uint8_t page, uint8_t component, const String &name)
-      : INextionWidget(nex, page, component, name)
-      , INextionTouchable(nex, page, component, name)
-      , INextionColourable(nex, page, component, name)
-      , INextionNumericalValued(nex, page, component, name)
+NextionSlider::NextionSlider(Nextion &nex, uint8_t page, uint8_t component,
+                             const String &name)
+    : INextionWidget(nex, page, component, name)
+    , INextionTouchable(nex, page, component, name)
+    , INextionColourable(nex, page, component, name)
+    , INextionNumericalValued(nex, page, component, name)
 {
 }
 
 /*!
  * \brief Gets the minimum value.
- * \return Value
+ * \param value Value
+ * \return True if successful
  */
-uint32_t NextionSlider::getMinValue()
+bool NextionSlider::getMinValue(uint32_t &value)
 {
-  return getNumberProperty("minval");
+  return getNumberProperty("minval", value);
 }
 
 /*!
@@ -34,11 +36,12 @@ bool NextionSlider::setMinValue(uint32_t value)
 
 /*!
  * \brief Gets the maximum value.
- * \return Value
+ * \param value Value
+ * \return True if successful
  */
-uint32_t NextionSlider::getMaxValue()
+bool NextionSlider::getMaxValue(uint32_t &value)
 {
-  return getNumberProperty("maxval");
+  return getNumberProperty("maxval", value);
 }
 
 /*!

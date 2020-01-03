@@ -13,14 +13,14 @@
 
 /*!
  * \brief Determines if the message is solicited vs unsolicited.
- * Unsolicited means it is an event raised by the device on its own (e.g. not due to a request by this lib)
- * \param commandId Message command ID
+ * Unsolicited means it is an event raised by the device on its own (e.g. not
+ * due to a request by this lib) \param commandId Message command ID
  */
 static bool isMessageUnsolicited(uint8_t commandId)
 {
-  return commandId == NEX_RET_EVENT_TOUCH_HEAD 
-    || commandId == NEX_RET_EVENT_POSITION_HEAD 
-    || commandId == NEX_RET_EVENT_SLEEP_POSITION_HEAD; 
+  return commandId == NEX_RET_EVENT_TOUCH_HEAD ||
+         commandId == NEX_RET_EVENT_POSITION_HEAD ||
+         commandId == NEX_RET_EVENT_SLEEP_POSITION_HEAD;
 }
 
 /*!
@@ -30,11 +30,12 @@ static bool isMessageUnsolicited(uint8_t commandId)
  * \param length Length of the message (including termination bytes) found
  * \return True if a message was found.
  */
-static bool findMessage(const std::vector<uint8_t>& buffer, std::size_t start, std::size_t& length)
+static bool findMessage(const std::vector<uint8_t> &buffer, std::size_t start,
+                        std::size_t &length)
 {
-  for(std::size_t i = start + 2; i < buffer.size(); ++i)
+  for (std::size_t i = start + 2; i < buffer.size(); ++i)
   {
-    if(buffer[i - 2] == 0xFF && buffer[i - 1] == 0xFF && buffer[i] == 0xFF)
+    if (buffer[i - 2] == 0xFF && buffer[i - 1] == 0xFF && buffer[i] == 0xFF)
     {
       length = i - start - 2;
       return true;
@@ -86,23 +87,26 @@ void Nextion::poll()
 }
 
 /*!
- * \brief Tries to read a solicited message and calls the callback if one is read.
- * \param callback Callback
+ * \brief Tries to read a solicited message and calls the callback if one is
+ * read. \param callback Callback
  */
-void Nextion::readSolicited(const std::function<void(const std::vector<uint8_t> &buffer, std::size_t length)> &callback)
+void Nextion::readSolicited(
+    const std::function<void(const std::vector<uint8_t> &buffer,
+                             std::size_t length)> &callback)
 {
   readMessage(true);
   std::size_t length = 0;
-  if(findMessage(m_solicitedBuffer, 0, length))
+  if (findMessage(m_solicitedBuffer, 0, length))
   {
     callback(m_solicitedBuffer, length);
-    if(m_solicitedBuffer.size() == length + 3)
+    if (m_solicitedBuffer.size() == length + 3)
     {
       m_solicitedBuffer.clear();
     }
     else
     {
-      m_solicitedBuffer.erase(m_solicitedBuffer.begin(), m_solicitedBuffer.begin() + length + 3);
+      m_solicitedBuffer.erase(m_solicitedBuffer.begin(),
+                              m_solicitedBuffer.begin() + length + 3);
     }
   }
   else
@@ -112,12 +116,12 @@ void Nextion::readSolicited(const std::function<void(const std::vector<uint8_t> 
 }
 
 /*!
- * \brief Reads a message from the device and places it to its respective buffer.
- * \param waitForSolicited Whether to wait for a solicited message
+ * \brief Reads a message from the device and places it to its respective
+ * buffer. \param waitForSolicited Whether to wait for a solicited message
  */
 void Nextion::readMessage(bool waitForSolicited)
 {
-  if(waitForSolicited)
+  if (waitForSolicited)
   {
     // Wait for the first byte
     uint64_t start = millis();
@@ -127,17 +131,17 @@ void Nextion::readMessage(bool waitForSolicited)
     }
   }
 
-  if(m_serialPort.available() == 0)
+  if (m_serialPort.available() == 0)
   {
     return;
   }
 
   uint64_t start = millis();
   int read;
-  while(millis() - start <= m_timeout)
+  while (millis() - start <= m_timeout)
   {
     read = m_serialPort.read();
-    if(read < 0)
+    if (read < 0)
     {
       delay(50);
       continue;
@@ -145,25 +149,28 @@ void Nextion::readMessage(bool waitForSolicited)
 
     m_buffer.push_back((uint8_t)(read));
     std::size_t size = m_buffer.size();
-    if(size >= 3 && m_buffer[size - 3] == 0xFF && m_buffer[size - 2] == 0xFF && m_buffer[size - 1] == 0xFF)
+    if (size >= 3 && m_buffer[size - 3] == 0xFF && m_buffer[size - 2] == 0xFF &&
+        m_buffer[size - 1] == 0xFF)
     {
       bool isUnsolicited = isMessageUnsolicited(m_buffer[0]);
-      std::vector<uint8_t> &targetBuffer = isUnsolicited ? m_unsolicitedBuffer : m_solicitedBuffer;
+      std::vector<uint8_t> &targetBuffer =
+          isUnsolicited ? m_unsolicitedBuffer : m_solicitedBuffer;
       targetBuffer.reserve(targetBuffer.size() + size);
-      std::copy(m_buffer.cbegin(), m_buffer.cend(), std::back_inserter(targetBuffer));
+      std::copy(m_buffer.cbegin(), m_buffer.cend(),
+                std::back_inserter(targetBuffer));
       m_buffer.clear();
 
-      if(isUnsolicited)
+      if (isUnsolicited)
       {
         NextionLog("Nextion::readMessage: Unsolicited message buffer: ");
       }
-      else 
+      else
       {
         NextionLog("Nextion::readMessage: Solicited message buffer: ");
       }
       NextionLogBin(targetBuffer, 0, targetBuffer.size());
-      
-      if(!waitForSolicited || !isUnsolicited)
+
+      if (!waitForSolicited || !isUnsolicited)
       {
         break;
       }
@@ -178,30 +185,37 @@ void Nextion::processUnsolicited()
 {
   std::size_t start = 0;
   std::size_t length = 0;
-  while(findMessage(m_unsolicitedBuffer, start, length))
+  while (findMessage(m_unsolicitedBuffer, start, length))
   {
-    switch(m_unsolicitedBuffer[start])
+    switch (m_unsolicitedBuffer[start])
     {
     case NEX_RET_EVENT_TOUCH_HEAD:
+    {
+      if (length != 4)
       {
-        if(length != 4)
-        {
-          NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_TOUCH_HEAD did not get all the data.\n");
-        }
-        for(auto iter = m_touchableList.cbegin(); iter != m_touchableList.cend(); ++iter)
-        {
-          (*iter)->processEvent(m_unsolicitedBuffer[start + 1], m_unsolicitedBuffer[start + 2], m_unsolicitedBuffer[start + 3]);
-        }
-        NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_TOUCH_HEAD processed.\n");
+        NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_TOUCH_HEAD did "
+                   "not get all the data.\n");
       }
-      break;
+      for (auto iter = m_touchableList.cbegin(); iter != m_touchableList.cend();
+           ++iter)
+      {
+        (*iter)->processEvent(m_unsolicitedBuffer[start + 1],
+                              m_unsolicitedBuffer[start + 2],
+                              m_unsolicitedBuffer[start + 3]);
+      }
+      NextionLog(
+          "Nextion::processUnsolicited: NEX_RET_EVENT_TOUCH_HEAD processed.\n");
+    }
+    break;
 
     case NEX_RET_EVENT_POSITION_HEAD:
-      NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_POSITION_HEAD not implemented.\n");
+      NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_POSITION_HEAD not "
+                 "implemented.\n");
       break;
 
     case NEX_RET_EVENT_SLEEP_POSITION_HEAD:
-      NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_POSITION_HEAD not implemented.\n");
+      NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_POSITION_HEAD not "
+                 "implemented.\n");
       break;
 
     default:
@@ -269,66 +283,71 @@ bool Nextion::wake()
 
 /*!
  * \brief Gets the current backlight brightness.
- * \return Brightness
+ * \param brightness Brightness value (0-100)
+ * \return True if successful
  */
-uint16_t Nextion::getBrightness()
+bool Nextion::getBrightness(uint16_t &brightness)
 {
   sendCommand("get dim");
   uint32_t val;
-  if (receiveNumber(&val))
-    return val;
-  else
-    return 0;
+  if (receiveNumber(val))
+  {
+    brightness = val;
+    return true;
+  }
+  return false;
 }
 
 /*!
  * \brief Sets the backlight brightness.
- * \param val Brightness value (0-100)
+ * \param brightness Brightness value (0-100)
  * \param persist If set to true value will be set as new power on default
  * \return True if successful
  */
-bool Nextion::setBrightness(uint16_t val, bool persist)
+bool Nextion::setBrightness(uint16_t brightness, bool persist)
 {
   if (persist)
   {
-    sendCommand("dims=%d", val);
+    sendCommand("dims=%d", brightness);
   }
   else
   {
-    sendCommand("dim=%d", val);
+    sendCommand("dim=%d", brightness);
   }
   return checkCommandComplete();
 }
 
 /*!
  * \brief Gets the ID of the current displayed page.
- * \return Page ID or 0xFF if the get operation fails
+ * \param id Page ID
+ * \return True if successful
  */
-uint8_t Nextion::getCurrentPage()
+bool Nextion::getCurrentPage(uint8_t &id)
 {
   sendCommand("sendme");
-  uint8_t pageId = 0xFF;
-  if(checkCommandComplete())
-  {
-    readSolicited([&pageId](const std::vector<uint8_t> &buffer, std::size_t length)
-    {
-      if(length < 2)
-      {
-        NextionLog("Nextion::getCurrentPage: Reading response timed out. Bytes read: %u\n", length);
-        return;
-      }
-      if(buffer[0] == NEX_RET_CURRENT_PAGE_ID_HEAD)
-      {
-        NextionLog("Nextion::getCurrentPage: %d\n", buffer[1]);
-        pageId = buffer[1];
-        return;
-      }
+  bool result = false;
+  readSolicited(
+      [&id, &result](const std::vector<uint8_t> &buffer, std::size_t length) {
+        if (length < 2)
+        {
+          NextionLog("Nextion::getCurrentPage: Reading response timed out. "
+                      "Bytes read: %u\n",
+                      length);
+        }
+        else if (buffer[0] == NEX_RET_CURRENT_PAGE_ID_HEAD)
+        {
+          NextionLog("Nextion::getCurrentPage: %d\n", buffer[1]);
+          id = buffer[1];
+          result = true;
+        }
+        else
+        {
+          NextionLog("Nextion::getCurrentPage: Unexpected response: 0x%x\n",
+                    buffer[0]);
+        }
+      });
 
-      NextionLog("Nextion::getCurrentPage: Unexpected response: 0x%x\n", buffer[0]);
-    });
-  }
-
-  return pageId;
+  return result;
 }
 
 /*!
@@ -513,14 +532,15 @@ void Nextion::sendCommand(const char *format, va_list args)
 bool Nextion::checkCommandComplete()
 {
   bool result = false;
-  readSolicited([&result](const std::vector<uint8_t> &buffer, std::size_t length)
-  {
-    if(length == 0)
+  readSolicited([&result](const std::vector<uint8_t> &buffer,
+                          std::size_t length) {
+    if (length == 0)
     {
-      NextionLog("Nextion::checkCommandComplete: Reading response timed out.\n");
+      NextionLog(
+          "Nextion::checkCommandComplete: Reading response timed out.\n");
       return;
     }
-    switch(buffer[0])
+    switch (buffer[0])
     {
     case NEX_RET_CMD_FAILED:
       NextionLog("Nextion::checkCommandComplete: NEX_RET_CMD_FAILED\n");
@@ -530,7 +550,8 @@ bool Nextion::checkCommandComplete()
       result = true;
       return;
     case NEX_RET_INVALID_COMPONENT_ID:
-      NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_COMPONENT_ID\n");
+      NextionLog(
+          "Nextion::checkCommandComplete: NEX_RET_INVALID_COMPONENT_ID\n");
       return;
     case NEX_RET_INVALID_PAGE_ID:
       NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_PAGE_ID\n");
@@ -551,7 +572,8 @@ bool Nextion::checkCommandComplete()
       NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_BAUD\n");
       return;
     case NEX_RET_INVALID_WAVEFORM_ID_CHANNEL:
-      NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_WAVEFORM_ID_CHANNEL\n");
+      NextionLog("Nextion::checkCommandComplete: "
+                 "NEX_RET_INVALID_WAVEFORM_ID_CHANNEL\n");
       return;
     case NEX_RET_INVALID_VARIABLE:
       NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_VARIABLE\n");
@@ -572,16 +594,19 @@ bool Nextion::checkCommandComplete()
       NextionLog("Nextion::checkCommandComplete: NEX_RET_IO_OP_FAILED\n");
       return;
     case NEX_RET_INVALID_ESCAPE_CHAR:
-      NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_ESCAPE_CHAR\n");
+      NextionLog(
+          "Nextion::checkCommandComplete: NEX_RET_INVALID_ESCAPE_CHAR\n");
       return;
     case NEX_RET_VAR_NAME_TOO_LONG:
       NextionLog("Nextion::checkCommandComplete: NEX_RET_VAR_NAME_TOO_LONG\n");
       return;
     case NEX_RET_SERIAL_BUFFER_OVERFLOW:
-      NextionLog("Nextion::checkCommandComplete: NEX_RET_SERIAL_BUFFER_OVERFLOW\n");
+      NextionLog(
+          "Nextion::checkCommandComplete: NEX_RET_SERIAL_BUFFER_OVERFLOW\n");
       return;
     default:
-      NextionLog("Nextion::checkCommandComplete: Unexpected response: 0x%x\n", buffer[0]);
+      NextionLog("Nextion::checkCommandComplete: Unexpected response: 0x%x\n",
+                 buffer[0]);
     }
   });
 
@@ -593,20 +618,21 @@ bool Nextion::checkCommandComplete()
  * \param number Pointer to the number to store received number in
  * \return True if receive was successful
  */
-bool Nextion::receiveNumber(uint32_t *number)
+bool Nextion::receiveNumber(uint32_t &number)
 {
   bool result = false;
-  readSolicited([&result, &number](const std::vector<uint8_t> &buffer, std::size_t length)
-  {
-    if(length < 5)
+  readSolicited([&result, &number](const std::vector<uint8_t> &buffer,
+                                   std::size_t length) {
+    if (length < 5)
     {
       NextionLog("Nextion::receiveNumber: Reading response timed out.\n");
       return;
     }
-    if(buffer[0] == NEX_RET_NUMBER_HEAD)
+    if (buffer[0] == NEX_RET_NUMBER_HEAD)
     {
-      *number = (buffer[4] << 24) | (buffer[3] << 16) | (buffer[2] << 8) | (buffer[1]);
-      NextionLog("Nextion::receiveNumber: value: %d\n", *number);
+      number = (buffer[4] << 24) | (buffer[3] << 16) | (buffer[2] << 8) |
+                (buffer[1]);
+      NextionLog("Nextion::receiveNumber: value: %d\n", number);
       result = true;
       return;
     }
@@ -625,9 +651,9 @@ bool Nextion::receiveNumber(uint32_t *number)
 size_t Nextion::receiveString(String &strBuffer)
 {
   size_t length = 0;
-  readSolicited([&length, &strBuffer](const std::vector<uint8_t> &buffer, std::size_t length)
-  {
-    if(length == 0)
+  readSolicited([&length, &strBuffer](const std::vector<uint8_t> &buffer,
+                                      std::size_t length) {
+    if (length == 0)
     {
       NextionLog("Nextion::receiveString: Reading response timed out.\n");
       return;
@@ -638,7 +664,7 @@ size_t Nextion::receiveString(String &strBuffer)
       return;
     }
     strBuffer.reserve(length - 1);
-    for(uint8_t i = 1; i < length; ++i)
+    for (uint8_t i = 1; i < length; ++i)
     {
       strBuffer.concat((char)buffer[i]);
     }
@@ -667,19 +693,15 @@ bool Nextion::waitForFirmwareChunkAck() const
   return false;
 }
 
-bool Nextion::uploadFirmware(
-  Stream &stream, 
-  size_t size,
-  uint32_t baudrate,
-  String &md5Out,
-  size_t bufferSize)
+bool Nextion::uploadFirmware(Stream &stream, size_t size, uint32_t baudrate,
+                             String &md5Out, size_t bufferSize)
 {
   const size_t chunkSize = 4096;
   md5Out = "";
 
   sendCommand("whmi-wri %u,%u,res0", size, baudrate);
 
-  // Flush the serial port first, regardless since 
+  // Flush the serial port first, regardless since
   // updating the firmware successfully takes the highest priority.
   while (m_serialPort.available())
   {
@@ -688,7 +710,8 @@ bool Nextion::uploadFirmware(
 
   if (!waitForFirmwareChunkAck())
   {
-    NextionLog("Nextion::uploadFirmware: Expected ACK for whmi-wri not received, aborting.\n");
+    NextionLog("Nextion::uploadFirmware: Expected ACK for whmi-wri not "
+               "received, aborting.\n");
     return false;
   }
 
@@ -709,7 +732,9 @@ bool Nextion::uploadFirmware(
       totalWritten += written;
       if (written != read)
       {
-        NextionLog("Nextion::uploadFirmware: Failed to write all the bytes. Written: %u\n", written);
+        NextionLog("Nextion::uploadFirmware: Failed to write all the bytes. "
+                   "Written: %u\n",
+                   written);
         return false;
       }
       md5.add(&buffer[0], read);
@@ -725,7 +750,8 @@ bool Nextion::uploadFirmware(
       chunkRemaining = chunkSize;
       if (!waitForFirmwareChunkAck())
       {
-        NextionLog("Nextion::uploadFirmware: Expected chunk ACK not received, aborting.\n");
+        NextionLog("Nextion::uploadFirmware: Expected chunk ACK not received, "
+                   "aborting.\n");
         return false;
       }
     }
@@ -733,13 +759,16 @@ bool Nextion::uploadFirmware(
 
   if (!waitForFirmwareChunkAck())
   {
-    NextionLog("Nextion::uploadFirmware: Expected final ACK not received, aborting.\n");
+    NextionLog("Nextion::uploadFirmware: Expected final ACK not received, "
+               "aborting.\n");
     return false;
   }
 
   if (totalWritten == size)
   {
-    NextionLog("Nextion::uploadFirmware: Stream sent. Total bytes written: %u, expected size: %u\n", totalWritten, size);
+    NextionLog("Nextion::uploadFirmware: Stream sent. Total bytes written: %u, "
+               "expected size: %u\n",
+               totalWritten, size);
 
     md5.calculate();
     md5Out = md5.toString();
@@ -761,7 +790,8 @@ bool Nextion::uploadFirmware(
   }
   else
   {
-    NextionLog("Nextion::uploadFirmware:Stream terminated prematurely, aborting.\n");
+    NextionLog(
+        "Nextion::uploadFirmware:Stream terminated prematurely, aborting.\n");
     return false;
   }
 }

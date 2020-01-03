@@ -1,12 +1,11 @@
 /*! \file */
 
-#ifndef __NEONEXTION_NEXTIONGAUGE
-#define __NEONEXTION_NEXTIONGAUGE
+#pragma once
 
-#include "Nextion.h"
-#include "INextionTouchable.h"
 #include "INextionColourable.h"
 #include "INextionNumericalValued.h"
+#include "INextionTouchable.h"
+#include "Nextion.h"
 
 /*!
  * \class NextionGauge
@@ -20,7 +19,8 @@ public:
   /*!
    * \copydoc INextionWidget::INextionWidget
    */
-  NextionGauge(Nextion &nex, uint8_t page, uint8_t component, const String &name)
+  NextionGauge(Nextion &nex, uint8_t page, uint8_t component,
+               const String &name)
       : INextionWidget(nex, page, component, name)
       , INextionTouchable(nex, page, component, name)
       , INextionColourable(nex, page, component, name)
@@ -28,5 +28,3 @@ public:
   {
   }
 };
-
-#endif

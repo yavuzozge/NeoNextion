@@ -1,10 +1,9 @@
 /*! \file */
 
-#ifndef __NEONEXTION_NEXTIONVARIABLENUMERIC
-#define __NEONEXTION_NEXTIONVARIABLENUMERIC
+#pragma once
 
-#include "Nextion.h"
 #include "INextionNumericalValued.h"
+#include "Nextion.h"
 
 /*!
  * \class NextionVariableNumeric
@@ -23,5 +22,3 @@ public:
   {
   }
 };
-
-#endif

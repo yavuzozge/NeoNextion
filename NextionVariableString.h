@@ -1,11 +1,10 @@
 /*! \file */
 
-#ifndef __NEONEXTION_NEXTIONVARIABLESTRING
-#define __NEONEXTION_NEXTIONVARIABLESTRING
+#pragma once
 
-#include "Nextion.h"
-#include "INextionWidget.h"
 #include "INextionStringValued.h"
+#include "INextionWidget.h"
+#include "Nextion.h"
 
 /*!
  * \class NextionVariableString
@@ -24,5 +23,3 @@ public:
   {
   }
 };
-
-#endif

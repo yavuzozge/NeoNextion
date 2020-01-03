@@ -1,7 +1,6 @@
 /*! \file */
 
-#ifndef __NEONEXTION_INEXTIONWIDGET
-#define __NEONEXTION_INEXTIONWIDGET
+#pragma once
 
 #include "Nextion.h"
 
@@ -24,14 +23,14 @@ public:
   uint8_t getComponentID();
 
   bool setNumberProperty(const String &propertyName, uint32_t value);
-  uint32_t getNumberProperty(const String &propertyName);
+  bool getNumberProperty(const String &propertyName, uint32_t &value);
   bool setPropertyCommand(const String &command, uint32_t value);
   bool setStringProperty(const String &propertyName, const String &value);
   size_t getStringProperty(const String &propertyName, String &buffer);
 
   bool setVisible(bool visible);
   bool enable(bool enable);
-  
+
 protected:
   void sendCommand(const String &format, ...);
   bool sendCommandWithWait(const String &format, ...);
@@ -40,8 +39,6 @@ protected:
   Nextion &m_nextion;    //!< Reference to the Nextion driver
   uint8_t m_pageID;      //!< ID of page this widget is on
   uint8_t m_componentID; //!< Component ID of this widget
-  const String m_name;  //!< Name of this widget
+  const String m_name;   //!< Name of this widget
   bool m_visible;
 };
-
-#endif

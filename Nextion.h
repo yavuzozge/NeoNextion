@@ -1,7 +1,6 @@
 /*! \file */
 
-#ifndef __NEONEXTION_NEXTION
-#define __NEONEXTION_NEXTION
+#pragma once
 
 #if defined(SPARK) || defined(PLATFORM_ID)
 #include "application.h"
@@ -38,10 +37,10 @@ public:
   bool sleep();
   bool wake();
 
-  uint16_t getBrightness();
-  bool setBrightness(uint16_t val, bool persist = false);
+  bool getBrightness(uint16_t &brightness);
+  bool setBrightness(uint16_t brightness, bool persist = false);
 
-  uint8_t getCurrentPage();
+  bool getCurrentPage(uint8_t &id);
 
   bool clear(uint32_t colour = NEX_COL_WHITE);
   bool drawPicture(uint16_t x, uint16_t y, uint8_t id);
@@ -64,22 +63,24 @@ public:
   void sendCommand(const char *format, ...);
   void sendCommand(const char *format, va_list args);
   bool checkCommandComplete();
-  bool receiveNumber(uint32_t *number);
+  bool receiveNumber(uint32_t &number);
   size_t receiveString(String &buffer);
-  bool uploadFirmware(Stream &stream, size_t size, uint32_t baudrate, String& md5Out, size_t bufferSize = 128);
+  bool uploadFirmware(Stream &stream, size_t size, uint32_t baudrate,
+                      String &md5Out, size_t bufferSize = 128);
 
 private:
-  Stream &m_serialPort;       //!< Serial port device is attached to
+  Stream &m_serialPort; //!< Serial port device is attached to
   uint64_t m_timeout;
-  std::forward_list<INextionTouchable*> m_touchableList; //!< Linked list of INextionTouchable
+  std::forward_list<INextionTouchable *>
+      m_touchableList; //!< Linked list of INextionTouchable
   std::vector<uint8_t> m_buffer;
   std::vector<uint8_t> m_solicitedBuffer;
   std::vector<uint8_t> m_unsolicitedBuffer;
 
-  void readSolicited(const std::function<void(const std::vector<uint8_t> &buffer, std::size_t length)> &callback);
+  void
+  readSolicited(const std::function<void(const std::vector<uint8_t> &buffer,
+                                         std::size_t length)> &callback);
   void readMessage(bool waitForSolicited);
   void processUnsolicited();
   bool waitForFirmwareChunkAck() const;
 };
-
-#endif

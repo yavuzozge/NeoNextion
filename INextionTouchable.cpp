@@ -28,8 +28,7 @@ INextionTouchable::~INextionTouchable()
  * \param eventType Type of touch event
  * \return True if the event effects this widget
  */
-bool INextionTouchable::processEvent(uint8_t pageID,
-                                     uint8_t componentID,
+bool INextionTouchable::processEvent(uint8_t pageID, uint8_t componentID,
                                      uint8_t eventType)
 {
   if (pageID != m_pageID)

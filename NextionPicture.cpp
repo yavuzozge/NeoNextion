@@ -15,11 +15,18 @@ NextionPicture::NextionPicture(Nextion &nex, uint8_t page, uint8_t component,
 
 /*!
  * \brief Gets the ID of the currently displayed picture.
- * \return PIcture ID (may also return 0 in case of error)
+ * \param id Picture ID
+ * \return True if successful
  */
-uint16_t NextionPicture::getPictureID()
+bool NextionPicture::getPictureID(uint16_t &id)
 {
-  return getNumberProperty("pic");
+  uint32_t value;
+  if (getNumberProperty("pic", value))
+  {
+    id = value;
+    return true;
+  }
+  return false;
 }
 
 /*!

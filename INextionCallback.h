@@ -1,8 +1,8 @@
 /*! \file */
 
-#ifndef __NEONEXTION_INEXTIONCALLBACK
-#define __NEONEXTION_INEXTIONCALLBACK
+#pragma once
 
+#include "NextionTypes.h"
 #include "INextionTouchable.h"
 
 /*!
@@ -24,5 +24,3 @@ public:
   virtual void handleNextionEvent(NextionEventType type,
                                   INextionTouchable *widget) = 0;
 };
-
-#endif

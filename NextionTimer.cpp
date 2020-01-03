@@ -14,11 +14,12 @@ NextionTimer::NextionTimer(Nextion &nex, uint8_t page, uint8_t component,
 
 /*!
  * \brief Gets the cycle time of the timer.
- * \return Time in ms (may also return 0 in case of error)
+ * \param cycle Time in ms
+ * \return True if successful
  */
-uint32_t NextionTimer::getCycle()
+bool NextionTimer::getCycle(uint32_t &cycle)
 {
-  return getNumberProperty("tim");
+  return getNumberProperty("tim", cycle);
 }
 
 /*!

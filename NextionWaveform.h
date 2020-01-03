@@ -1,11 +1,10 @@
 /*! \file */
 
-#ifndef __NEONEXTION_NEXTIONWAVEFORM
-#define __NEONEXTION_NEXTIONWAVEFORM
+#pragma once
 
-#include "Nextion.h"
-#include "INextionTouchable.h"
 #include "INextionColourable.h"
+#include "INextionTouchable.h"
+#include "Nextion.h"
 
 /*!
  * \class NextionWaveform
@@ -20,16 +19,14 @@ public:
   bool addValue(uint8_t channel, uint8_t value);
 
   bool setChannelColour(uint8_t channel, uint32_t colour, bool refresh = true);
-  uint32_t getChannelColour(uint8_t channel);
+  bool getChannelColour(uint8_t channel, uint32_t &colour);
 
   bool setGridColour(uint32_t colour, bool refresh = true);
-  uint32_t getGridColour();
+  bool getGridColour(uint32_t &colour);
 
   bool setGridWidth(uint16_t width);
-  uint16_t getGridWidth();
+  bool getGridWidth(uint16_t &width);
 
   bool setGridHeight(uint16_t height);
-  uint16_t getGridHeight();
+  bool getGridHeight(uint16_t &height);
 };
-
-#endif

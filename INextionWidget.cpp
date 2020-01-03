@@ -27,9 +27,9 @@ INextionWidget::~INextionWidget()
 }
 
 /*!
- * \brief Sets the initial visibility of the control. Sometimes a control can be hidden
- * when the page is getting initialized. To be able to track visibility correctly, such
- * controls would need to be initialized using this method
+ * \brief Sets the initial visibility of the control. Sometimes a control can be
+ * hidden when the page is getting initialized. To be able to track visibility
+ * correctly, such controls would need to be initialized using this method
  * \param visible initial visibility
  */
 void INextionWidget::setInitialVisibility(bool visible)
@@ -61,24 +61,24 @@ uint8_t INextionWidget::getComponentID()
  * \param value Value
  * \return True if successful
  */
-bool INextionWidget::setNumberProperty(const String &propertyName, uint32_t value)
+bool INextionWidget::setNumberProperty(const String &propertyName,
+                                       uint32_t value)
 {
-  return sendCommandWithWait("%s.%s=%d", m_name.c_str(), propertyName.c_str(), value);
+  return sendCommandWithWait("%s.%s=%d", m_name.c_str(), propertyName.c_str(),
+                             value);
 }
 
 /*!
  * \brief Gets the value of a numerical property of this widget.
  * \param propertyName Name of the property
- * \return Value (may also return 0 in case of error)
+ * \param value Reference to variable to store result in
+ * \return True if successful
  */
-uint32_t INextionWidget::getNumberProperty(const String &propertyName)
+bool INextionWidget::getNumberProperty(const String &propertyName,
+                                       uint32_t &value)
 {
-  sendCommand("get %s.%s", m_name.c_str(), propertyName.c_str());
-  uint32_t id;
-  if (m_nextion.receiveNumber(&id))
-    return id;
-  else
-    return 0;
+  sendCommandWithWait("get %s.%s", m_name.c_str(), propertyName.c_str());
+  return m_nextion.receiveNumber(value);
 }
 
 /*!
@@ -87,20 +87,23 @@ uint32_t INextionWidget::getNumberProperty(const String &propertyName)
  * \param value Value
  * \return True if successful
  */
-bool INextionWidget::setStringProperty(const String &propertyName, const String &value)
+bool INextionWidget::setStringProperty(const String &propertyName,
+                                       const String &value)
 {
-  return sendCommandWithWait("%s.%s=\"%s\"", m_name.c_str(), propertyName.c_str(), value.c_str());
+  return sendCommandWithWait("%s.%s=\"%s\"", m_name.c_str(),
+                             propertyName.c_str(), value.c_str());
 }
 
 /*!
  * \brief Gets the value of a string property of this widget.
  * \param propertyName Name of the property
- * \param value Pointer to char array to store result in
+ * \param value Reference to String to store result in
  * \return Actual length of value
  */
-size_t INextionWidget::getStringProperty(const String &propertyName, String &buffer)
+size_t INextionWidget::getStringProperty(const String &propertyName,
+                                         String &buffer)
 {
-  sendCommand("get %s.%s", m_name.c_str(), propertyName.c_str());
+  sendCommandWithWait("get %s.%s", m_name.c_str(), propertyName.c_str());
   return m_nextion.receiveString(buffer);
 }
 
@@ -130,12 +133,12 @@ bool INextionWidget::setPropertyCommand(const String &command, uint32_t value)
 
 bool INextionWidget::setVisible(bool visible)
 {
-  if(visible == m_visible)
+  if (visible == m_visible)
   {
     return true;
   }
 
-  if(setPropertyCommand("vis", visible ? 1 : 0))
+  if (setPropertyCommand("vis", visible ? 1 : 0))
   {
     m_visible = visible;
     return true;

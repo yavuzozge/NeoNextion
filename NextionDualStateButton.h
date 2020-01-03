@@ -1,12 +1,11 @@
 /*! \file */
 
-#ifndef __NEONEXTION_NEXTIONDUALSTATEBUTTON
-#define __NEONEXTION_NEXTIONDUALSTATEBUTTON
+#pragma once
 
-#include "Nextion.h"
-#include "INextionTouchable.h"
-#include "INextionColourable.h"
 #include "INextionBooleanValued.h"
+#include "INextionColourable.h"
+#include "INextionTouchable.h"
+#include "Nextion.h"
 
 /*!
  * \class NextionDualStateButton
@@ -29,5 +28,3 @@ public:
   {
   }
 };
-
-#endif

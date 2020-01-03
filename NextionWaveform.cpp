@@ -54,13 +54,13 @@ bool NextionWaveform::setChannelColour(uint8_t channel, uint32_t colour,
 /*!
  * \brief Gets the colour of a channel.
  * \param channel Channel number
- * \return Colour (may return 0 in case of error)
- */
-uint32_t NextionWaveform::getChannelColour(uint8_t channel)
+ * \param colour Colour
+ * \return True if successful */
+bool NextionWaveform::getChannelColour(uint8_t channel, uint32_t &colour)
 {
   char buffer[5];
   snprintf(buffer, 5, "pco%d", channel);
-  return getColour(buffer);
+  return getColour(buffer, colour);
 }
 
 /*!
@@ -76,11 +76,11 @@ bool NextionWaveform::setGridColour(uint32_t colour, bool refresh)
 
 /*!
  * \brief Gets the colour of the grid lines.
- * \return Colour (may return 0 in case of error)
- */
-uint32_t NextionWaveform::getGridColour()
+ * \param colour Colour
+ * \return True if successful */
+bool NextionWaveform::getGridColour(uint32_t &colour)
 {
-  return getColour("gdc");
+  return getColour("gdc", colour);
 }
 
 /*!
@@ -95,11 +95,18 @@ bool NextionWaveform::setGridWidth(uint16_t width)
 
 /*!
  * \brief Gets the width of the grid squares.
- * \return Width (may return 0 in case of error)
+ * \param width Width
+ * \return True if successful
  */
-uint16_t NextionWaveform::getGridWidth()
+bool NextionWaveform::getGridWidth(uint16_t &width)
 {
-  return getNumberProperty("gdw");
+  uint32_t value;
+  if (getNumberProperty("gdw", value))
+  {
+    width = value;
+    return true;
+  }
+  return false;
 }
 
 /*!
@@ -114,9 +121,16 @@ bool NextionWaveform::setGridHeight(uint16_t height)
 
 /*!
  * \brief Gets the height of the grid squares.
- * \return Height (may return 0 in case of error)
+ * \param height Height
+ * \return True if successful
  */
-uint16_t NextionWaveform::getGridHeight()
+bool NextionWaveform::getGridHeight(uint16_t &height)
 {
-  return getNumberProperty("gdh");
+  uint32_t value;
+  if (getNumberProperty("gdh", value))
+  {
+    height = value;
+    return true;
+  }
+  return false;
 }

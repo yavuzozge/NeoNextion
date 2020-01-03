@@ -1,10 +1,9 @@
 /*! \file */
 
-#ifndef __NEONEXTION_INEXTIONBOOLEANVALUED
-#define __NEONEXTION_INEXTIONBOOLEANVALUED
+#pragma once
 
-#include "Nextion.h"
 #include "INextionNumericalValued.h"
+#include "Nextion.h"
 #include "NextionTypes.h"
 
 /*!
@@ -30,9 +29,15 @@ public:
    * \brief Gets the state of the boolean value of the control.
    * \return True if boolean state is active
    */
-  bool isActive()
+  bool isActive(bool &active)
   {
-    return getValue();
+    uint32_t value;
+    if (getValue(value))
+    {
+      active = value;
+      return true;
+    }
+    return false;
   }
 
   /*!
@@ -45,5 +50,3 @@ public:
     return setValue((uint32_t)active);
   }
 };
-
-#endif

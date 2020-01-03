@@ -1,12 +1,11 @@
 /*! \file */
 
-#ifndef __NEONEXTION_NEXTIONRADIOBUTTON
-#define __NEONEXTION_NEXTIONRADIOBUTTON
+#pragma once
 
-#include "Nextion.h"
-#include "INextionTouchable.h"
-#include "INextionColourable.h"
 #include "INextionBooleanValued.h"
+#include "INextionColourable.h"
+#include "INextionTouchable.h"
+#include "Nextion.h"
 
 /*!
  * \class NextionRadioButton
@@ -29,5 +28,3 @@ public:
   {
   }
 };
-
-#endif

@@ -1,13 +1,12 @@
 /*! \file */
 
-#ifndef __NEONEXTION_NEXTIONSLIDINGTEXT
-#define __NEONEXTION_NEXTIONSLIDINGTEXT
+#pragma once
 
-#include "Nextion.h"
-#include "INextionTouchable.h"
 #include "INextionColourable.h"
-#include "INextionStringValued.h"
 #include "INextionFontStyleable.h"
+#include "INextionStringValued.h"
+#include "INextionTouchable.h"
+#include "Nextion.h"
 
 /*!
  * \class NextionSlidingText
@@ -26,16 +25,14 @@ public:
                      const String &name);
 
   bool setScrolling(bool scroll);
-  bool isScrolling();
+  bool isScrolling(bool &scroll);
 
   bool setScrollDirection(NextionScrollDirection direction);
-  NextionScrollDirection getScrollDirection();
+  bool getScrollDirection(NextionScrollDirection &direction);
 
   bool setScrollDistance(uint32_t distance);
-  uint32_t getScrollDistance();
+  bool getScrollDistance(uint32_t &distance);
 
   bool setScrollDelay(uint32_t delay);
-  uint32_t getScrollDelay();
+  bool getScrollDelay(uint32_t &delay);
 };
-
-#endif

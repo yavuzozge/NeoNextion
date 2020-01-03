@@ -1,10 +1,9 @@
 /*! \file */
 
-#ifndef __NEONEXTION_NEXTIONCALLBACKFUNCTIONHANDLER
-#define __NEONEXTION_NEXTIONCALLBACKFUNCTIONHANDLER
+#pragma once
 
-#include <functional>
 #include "INextionCallback.h"
+#include <functional>
 
 /*!
  * \class NextionCallbackFunctionHandler
@@ -17,7 +16,8 @@ public:
    * \typedef NextionFunction
    * \brief Event handler function for display events.
    */
-  typedef std::function<void(NextionEventType, INextionTouchable *)> NextionFunction;
+  typedef std::function<void(NextionEventType, INextionTouchable *)>
+      NextionFunction;
 
   /*!
    * \brief Creates a new function pointer callback handler.
@@ -42,5 +42,3 @@ public:
 private:
   NextionFunction m_function; //!< Pointer to the callback function
 };
-
-#endif

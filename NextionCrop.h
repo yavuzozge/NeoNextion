@@ -1,10 +1,9 @@
 /*! \file */
 
-#ifndef __NEONEXTION_NEXTIONCROP
-#define __NEONEXTION_NEXTIONCROP
+#pragma once
 
-#include "Nextion.h"
 #include "INextionTouchable.h"
+#include "Nextion.h"
 
 /*!
  * \class NextionCrop
@@ -13,10 +12,9 @@
 class NextionCrop : public INextionTouchable
 {
 public:
-  NextionCrop(Nextion &nex, uint8_t page, uint8_t component, const String &name);
+  NextionCrop(Nextion &nex, uint8_t page, uint8_t component,
+              const String &name);
 
-  uint16_t getPictureID();
+  bool getPictureID(uint16_t &id);
   bool setPictureID(uint16_t id);
 };
-
-#endif

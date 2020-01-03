@@ -1,10 +1,9 @@
 /*! \file */
 
-#ifndef __NEONEXTION_INEXTIONCOLOURABLE
-#define __NEONEXTION_INEXTIONCOLOURABLE
+#pragma once
 
-#include "Nextion.h"
 #include "INextionWidget.h"
+#include "Nextion.h"
 #include "NextionTypes.h"
 
 /*!
@@ -18,21 +17,19 @@ public:
                      const String &name);
 
   bool setForegroundColour(uint32_t colour, bool refresh = true);
-  uint32_t getForegroundColour();
+  bool getForegroundColour(uint32_t &colour);
 
   bool setEventForegroundColour(uint32_t colour, bool refresh = true);
-  uint32_t getEventForegroundColour();
+  bool getEventForegroundColour(uint32_t &colour);
 
   bool setBackgroundColour(uint32_t colour, bool refresh = true);
-  uint32_t getBackgroundColour();
+  bool getBackgroundColour(uint32_t &colour);
 
   bool setEventBackgroundColour(uint32_t colour, bool refresh = true);
-  uint32_t getEventBackgroundColour();
+  bool getEventBackgroundColour(uint32_t &colour);
 
   bool setColour(const String &type, uint32_t colour, bool refresh);
-  uint32_t getColour(const String &type);
+  bool getColour(const String &type, uint32_t &colour);
 
   bool afterSet(bool result, bool refresh);
 };
-
-#endif

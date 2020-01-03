@@ -1,13 +1,12 @@
 /*! \file */
 
-#ifndef __NEONEXTION_NEXTIONNUMBER
-#define __NEONEXTION_NEXTIONNUMBER
+#pragma once
 
-#include "Nextion.h"
-#include "INextionTouchable.h"
 #include "INextionColourable.h"
-#include "INextionNumericalValued.h"
 #include "INextionFontStyleable.h"
+#include "INextionNumericalValued.h"
+#include "INextionTouchable.h"
+#include "Nextion.h"
 
 /*!
  * \class NextionNumber
@@ -22,7 +21,8 @@ public:
   /*!
    * \copydoc INextionWidget::INextionWidget
    */
-  NextionNumber(Nextion &nex, uint8_t page, uint8_t component, const String &name)
+  NextionNumber(Nextion &nex, uint8_t page, uint8_t component,
+                const String &name)
       : INextionWidget(nex, page, component, name)
       , INextionTouchable(nex, page, component, name)
       , INextionColourable(nex, page, component, name)
@@ -31,5 +31,3 @@ public:
   {
   }
 };
-
-#endif

@@ -1,13 +1,12 @@
 /*! \file */
 
-#ifndef __NEONEXTION_NEXTIONBUTTON
-#define __NEONEXTION_NEXTIONBUTTON
+#pragma once
 
-#include "Nextion.h"
-#include "INextionTouchable.h"
 #include "INextionColourable.h"
-#include "INextionStringValued.h"
 #include "INextionFontStyleable.h"
+#include "INextionStringValued.h"
+#include "INextionTouchable.h"
+#include "Nextion.h"
 
 /*!
  * \class NextionButton
@@ -22,7 +21,8 @@ public:
   /*!
    * \copydoc INextionWidget::INextionWidget
    */
-  NextionButton(Nextion &nex, uint8_t page, uint8_t component, const String &name)
+  NextionButton(Nextion &nex, uint8_t page, uint8_t component,
+                const String &name)
       : INextionWidget(nex, page, component, name)
       , INextionTouchable(nex, page, component, name)
       , INextionColourable(nex, page, component, name)
@@ -32,23 +32,28 @@ public:
   }
 
   /*!
-  * \brief Gets the ID of the currently displayed picture.
-  * \return PIcture ID (may also return 0 in case of error)
-  */
-  uint16_t getPictureID()
+   * \brief Gets the ID of the currently displayed picture.
+   * \param id Picture ID returned
+   * \return True if successful
+   */
+  bool getPictureID(uint16_t &id)
   {
-    return getNumberProperty("pic");
+    uint32_t value;
+    if (getNumberProperty("pic", value))
+    {
+      id = value;
+      return true;
+    }
+    return false;
   }
 
   /*!
-  * \brief Sets the picture to be displayed.
-  * \param id Picture ID
-  * \return True if successful
-  */
+   * \brief Sets the picture to be displayed.
+   * \param id Picture ID
+   * \return True if successful
+   */
   bool setPictureID(uint16_t id)
   {
     return setNumberProperty("pic", id);
   }
 };
-
-#endif

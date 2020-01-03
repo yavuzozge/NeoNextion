@@ -1,7 +1,6 @@
 /*! \file */
 
-#ifndef __NEONEXTION_NEXTIONTYPES
-#define __NEONEXTION_NEXTIONTYPES
+#pragma once
 
 /*!
  * \enum NextionValue
@@ -113,5 +112,3 @@ enum NextionScrollDirection
   NEX_SCROLL_UP = 3,
   NEX_SCROLL_DOWN = 2
 };
-
-#endif

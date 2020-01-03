@@ -1,12 +1,11 @@
 /*! \file */
 
-#ifndef __NEONEXTION_NEXTIONPROGRESSBAR
-#define __NEONEXTION_NEXTIONPROGRESSBAR
+#pragma once
 
-#include "Nextion.h"
-#include "INextionTouchable.h"
 #include "INextionColourable.h"
 #include "INextionNumericalValued.h"
+#include "INextionTouchable.h"
+#include "Nextion.h"
 
 /*!
  * \class NextionProgressBar
@@ -29,5 +28,3 @@ public:
   {
   }
 };
-
-#endif
