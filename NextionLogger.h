@@ -1,6 +1,6 @@
 #pragma once
 
-#define ENABLE_NEXTION_LOGGER
+//#define ENABLE_NEXTION_LOGGER
 
 #ifdef ENABLE_NEXTION_LOGGER
 #define NextionLog(args...) Serial.printf(args)
@@ -14,7 +14,7 @@
             Serial.print(' '); \
           } \
           Serial.println(); 
-#elif
+#else
 #define NextionLog(args...)
 #define NextionLogBin(buffer, start, length)
 #endif
