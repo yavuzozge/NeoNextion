@@ -21,7 +21,7 @@ INextionFontStyleable::INextionFontStyleable(Nextion &nex, uint8_t page,
  */
 bool INextionFontStyleable::setFont(uint8_t id, bool refresh)
 {
-  return afterSet(setNumberProperty("font", id), refresh);
+    return afterSet(setNumberProperty("font", id), refresh);
 }
 
 /*!
@@ -32,13 +32,13 @@ bool INextionFontStyleable::setFont(uint8_t id, bool refresh)
  */
 bool INextionFontStyleable::getFont(uint8_t &id)
 {
-  uint32_t value;
-  if (getNumberProperty("font", value))
-  {
-    id = value;
-    return true;
-  }
-  return false;
+    uint32_t value;
+    if (getNumberProperty("font", value))
+    {
+        id = value;
+        return true;
+    }
+    return false;
 }
 
 /*!
@@ -51,7 +51,7 @@ bool INextionFontStyleable::getFont(uint8_t &id)
 bool INextionFontStyleable::setHAlignment(NextionFontAlignment align,
                                           bool refresh)
 {
-  return afterSet(setNumberProperty("xcen", align), refresh);
+    return afterSet(setNumberProperty("xcen", align), refresh);
 }
 
 /*!
@@ -62,13 +62,13 @@ bool INextionFontStyleable::setHAlignment(NextionFontAlignment align,
  */
 bool INextionFontStyleable::getHAlignment(NextionFontAlignment &align)
 {
-  uint32_t value;
-  if (getNumberProperty("xcen", value))
-  {
-    align = static_cast<NextionFontAlignment>(value);
-    return true;
-  }
-  return false;
+    uint32_t value;
+    if (getNumberProperty("xcen", value))
+    {
+        align = static_cast<NextionFontAlignment>(value);
+        return true;
+    }
+    return false;
 }
 
 /*!
@@ -81,7 +81,7 @@ bool INextionFontStyleable::getHAlignment(NextionFontAlignment &align)
 bool INextionFontStyleable::setVAlignment(NextionFontAlignment align,
                                           bool refresh)
 {
-  return afterSet(setNumberProperty("ycen", align), refresh);
+    return afterSet(setNumberProperty("ycen", align), refresh);
 }
 
 /*!
@@ -92,13 +92,13 @@ bool INextionFontStyleable::setVAlignment(NextionFontAlignment align,
  */
 bool INextionFontStyleable::getVAlignment(NextionFontAlignment &align)
 {
-  uint32_t value;
-  if (getNumberProperty("ycen", value))
-  {
-    align = static_cast<NextionFontAlignment>(value);
-    return true;
-  }
-  return false;
+    uint32_t value;
+    if (getNumberProperty("ycen", value))
+    {
+        align = static_cast<NextionFontAlignment>(value);
+        return true;
+    }
+    return false;
 }
 
 /*!
@@ -109,16 +109,16 @@ bool INextionFontStyleable::getVAlignment(NextionFontAlignment &align)
  */
 bool INextionFontStyleable::afterSet(bool result, bool refresh)
 {
-  if (result)
-  {
-    if (refresh)
+    if (result)
     {
-      m_nextion.refresh(m_name);
-      return m_nextion.checkCommandComplete();
+        if (refresh)
+        {
+            m_nextion.refresh(m_name);
+            return m_nextion.checkCommandComplete();
+        }
+        else
+            return true;
     }
     else
-      return true;
-  }
-  else
-    return false;
+        return false;
 }

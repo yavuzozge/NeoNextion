@@ -19,7 +19,7 @@ NextionTimer::NextionTimer(Nextion &nex, uint8_t page, uint8_t component,
  */
 bool NextionTimer::getCycle(uint32_t &cycle)
 {
-  return getNumberProperty("tim", cycle);
+    return getNumberProperty("tim", cycle);
 }
 
 /*!
@@ -29,9 +29,9 @@ bool NextionTimer::getCycle(uint32_t &cycle)
  */
 bool NextionTimer::setCycle(uint32_t cycle)
 {
-  if (cycle < 50)
-    return false;
-  return setNumberProperty("tim", cycle);
+    if (cycle < 50)
+        return false;
+    return setNumberProperty("tim", cycle);
 }
 
 /*!
@@ -40,7 +40,7 @@ bool NextionTimer::setCycle(uint32_t cycle)
  */
 bool NextionTimer::enable()
 {
-  return setNumberProperty("en", 1);
+    return setNumberProperty("en", 1);
 }
 
 /*!
@@ -49,5 +49,5 @@ bool NextionTimer::enable()
  */
 bool NextionTimer::disable()
 {
-  return setNumberProperty("en", 0);
+    return setNumberProperty("en", 0);
 }

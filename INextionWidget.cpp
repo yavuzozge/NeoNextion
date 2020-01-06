@@ -34,7 +34,7 @@ INextionWidget::~INextionWidget()
  */
 void INextionWidget::setInitialVisibility(bool visible)
 {
-  m_visible = visible;
+    m_visible = visible;
 }
 
 /*!
@@ -43,7 +43,7 @@ void INextionWidget::setInitialVisibility(bool visible)
  */
 uint8_t INextionWidget::getPageID()
 {
-  return m_pageID;
+    return m_pageID;
 }
 
 /*!
@@ -52,7 +52,7 @@ uint8_t INextionWidget::getPageID()
  */
 uint8_t INextionWidget::getComponentID()
 {
-  return m_componentID;
+    return m_componentID;
 }
 
 /*!
@@ -64,8 +64,8 @@ uint8_t INextionWidget::getComponentID()
 bool INextionWidget::setNumberProperty(const String &propertyName,
                                        uint32_t value)
 {
-  return sendCommandWithWait("%s.%s=%d", m_name.c_str(), propertyName.c_str(),
-                             value);
+    return sendCommandWithWait("%s.%s=%d", m_name.c_str(), propertyName.c_str(),
+                               value);
 }
 
 /*!
@@ -77,8 +77,8 @@ bool INextionWidget::setNumberProperty(const String &propertyName,
 bool INextionWidget::getNumberProperty(const String &propertyName,
                                        uint32_t &value)
 {
-  sendCommandWithWait("get %s.%s", m_name.c_str(), propertyName.c_str());
-  return m_nextion.receiveNumber(value);
+    sendCommandWithWait("get %s.%s", m_name.c_str(), propertyName.c_str());
+    return m_nextion.receiveNumber(value);
 }
 
 /*!
@@ -90,8 +90,8 @@ bool INextionWidget::getNumberProperty(const String &propertyName,
 bool INextionWidget::setStringProperty(const String &propertyName,
                                        const String &value)
 {
-  return sendCommandWithWait("%s.%s=\"%s\"", m_name.c_str(),
-                             propertyName.c_str(), value.c_str());
+    return sendCommandWithWait("%s.%s=\"%s\"", m_name.c_str(),
+                               propertyName.c_str(), value.c_str());
 }
 
 /*!
@@ -103,50 +103,50 @@ bool INextionWidget::setStringProperty(const String &propertyName,
 size_t INextionWidget::getStringProperty(const String &propertyName,
                                          String &buffer)
 {
-  sendCommandWithWait("get %s.%s", m_name.c_str(), propertyName.c_str());
-  return m_nextion.receiveString(buffer);
+    sendCommandWithWait("get %s.%s", m_name.c_str(), propertyName.c_str());
+    return m_nextion.receiveString(buffer);
 }
 
 void INextionWidget::sendCommand(const String &format, ...)
 {
-  va_list args;
-  va_start(args, format);
-  m_nextion.sendCommand(format.c_str(), args);
-  va_end(args);
+    va_list args;
+    va_start(args, format);
+    m_nextion.sendCommand(format.c_str(), args);
+    va_end(args);
 }
 
 bool INextionWidget::sendCommandWithWait(const String &format, ...)
 {
-  va_list args;
-  va_start(args, format);
-  m_nextion.sendCommand(format.c_str(), args);
-  va_end(args);
+    va_list args;
+    va_start(args, format);
+    m_nextion.sendCommand(format.c_str(), args);
+    va_end(args);
 
-  return m_nextion.checkCommandComplete();
+    return m_nextion.checkCommandComplete();
 }
 
 bool INextionWidget::setPropertyCommand(const String &command, uint32_t value)
 {
-  m_nextion.sendCommand("%s %s,%ld", command.c_str(), m_name.c_str(), value);
-  return m_nextion.checkCommandComplete();
+    m_nextion.sendCommand("%s %s,%ld", command.c_str(), m_name.c_str(), value);
+    return m_nextion.checkCommandComplete();
 }
 
 bool INextionWidget::setVisible(bool visible)
 {
-  if (visible == m_visible)
-  {
-    return true;
-  }
+    if (visible == m_visible)
+    {
+        return true;
+    }
 
-  if (setPropertyCommand("vis", visible ? 1 : 0))
-  {
-    m_visible = visible;
-    return true;
-  }
-  return false;
+    if (setPropertyCommand("vis", visible ? 1 : 0))
+    {
+        m_visible = visible;
+        return true;
+    }
+    return false;
 }
 
 bool INextionWidget::enable(bool enable)
 {
-  return setPropertyCommand("tsw", enable ? 1 : 0);
+    return setPropertyCommand("tsw", enable ? 1 : 0);
 }

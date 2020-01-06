@@ -15,38 +15,38 @@
 class INextionBooleanValued : private INextionNumericalValued
 {
 public:
-  /*!
+    /*!
    * \copydoc INextionWidget::INextionWidget
    */
-  INextionBooleanValued(Nextion &nex, uint8_t page, uint8_t component,
-                        const String &name)
-      : INextionWidget(nex, page, component, name)
-      , INextionNumericalValued(nex, page, component, name)
-  {
-  }
+    INextionBooleanValued(Nextion &nex, uint8_t page, uint8_t component,
+                          const String &name)
+        : INextionWidget(nex, page, component, name)
+        , INextionNumericalValued(nex, page, component, name)
+    {
+    }
 
-  /*!
+    /*!
    * \brief Gets the state of the boolean value of the control.
    * \return True if boolean state is active
    */
-  bool isActive(bool &active)
-  {
-    uint32_t value;
-    if (getValue(value))
+    bool isActive(bool &active)
     {
-      active = value;
-      return true;
+        uint32_t value;
+        if (getValue(value))
+        {
+            active = value;
+            return true;
+        }
+        return false;
     }
-    return false;
-  }
 
-  /*!
+    /*!
    * \brief Sets the state of the boolean value.
    * \param active State
    * \return True if successful
    */
-  bool setActive(bool active)
-  {
-    return setValue((uint32_t)active);
-  }
+    bool setActive(bool active)
+    {
+        return setValue((uint32_t)active);
+    }
 };

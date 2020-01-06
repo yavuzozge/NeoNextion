@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "NextionTypes.h"
 #include "INextionTouchable.h"
+#include "NextionTypes.h"
 
 /*!
  * \class INextionCallback
@@ -12,15 +12,15 @@
 class INextionCallback
 {
 public:
-  INextionCallback()
-  {
-  }
+    INextionCallback()
+    {
+    }
 
-  /*!
+    /*!
    * \brief Handle a callback.
    * \param type Event type
    * \param widget Pointer to the widget that fired the event
    */
-  virtual void handleNextionEvent(NextionEventType type,
-                                  INextionTouchable *widget) = 0;
+    virtual void handleNextionEvent(NextionEventType type,
+                                    INextionTouchable *widget) = 0;
 };

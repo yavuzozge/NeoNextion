@@ -10,7 +10,7 @@ INextionTouchable::INextionTouchable(Nextion &nex, uint8_t page,
     : INextionWidget(nex, page, component, name)
     , m_callback(NULL)
 {
-  m_nextion.registerTouchable(this);
+    m_nextion.registerTouchable(this);
 }
 
 /*!
@@ -18,7 +18,7 @@ INextionTouchable::INextionTouchable(Nextion &nex, uint8_t page,
  */
 INextionTouchable::~INextionTouchable()
 {
-  m_nextion.unregisterTouchable(this);
+    m_nextion.unregisterTouchable(this);
 }
 
 /*!
@@ -31,27 +31,27 @@ INextionTouchable::~INextionTouchable()
 bool INextionTouchable::processEvent(uint8_t pageID, uint8_t componentID,
                                      uint8_t eventType)
 {
-  if (pageID != m_pageID)
-    return false;
+    if (pageID != m_pageID)
+        return false;
 
-  if (componentID != m_componentID)
-    return false;
+    if (componentID != m_componentID)
+        return false;
 
-  switch (eventType)
-  {
-  case NEX_EVENT_PUSH:
-    if (m_callback)
-      m_callback->handleNextionEvent((NextionEventType)eventType, this);
-    return true;
+    switch (eventType)
+    {
+    case NEX_EVENT_PUSH:
+        if (m_callback)
+            m_callback->handleNextionEvent((NextionEventType)eventType, this);
+        return true;
 
-  case NEX_EVENT_POP:
-    if (m_callback)
-      m_callback->handleNextionEvent((NextionEventType)eventType, this);
-    return true;
+    case NEX_EVENT_POP:
+        if (m_callback)
+            m_callback->handleNextionEvent((NextionEventType)eventType, this);
+        return true;
 
-  default:
-    return false;
-  }
+    default:
+        return false;
+    }
 }
 
 /*!
@@ -63,14 +63,14 @@ bool INextionTouchable::processEvent(uint8_t pageID, uint8_t componentID,
 bool INextionTouchable::attachCallback(
     const NextionCallbackFunctionHandler::NextionFunction &function)
 {
-  if (!function)
-    return false;
+    if (!function)
+        return false;
 
-  if (m_callback != NULL)
-    detachCallback();
+    if (m_callback != NULL)
+        detachCallback();
 
-  m_callback = new NextionCallbackFunctionHandler(function);
-  return true;
+    m_callback = new NextionCallbackFunctionHandler(function);
+    return true;
 }
 
 /*!
@@ -81,14 +81,14 @@ bool INextionTouchable::attachCallback(
  */
 bool INextionTouchable::attachCallback(INextionCallback *handler)
 {
-  if (!handler)
-    return false;
+    if (!handler)
+        return false;
 
-  if (m_callback != NULL)
-    detachCallback();
+    if (m_callback != NULL)
+        detachCallback();
 
-  m_callback = handler;
-  return true;
+    m_callback = handler;
+    return true;
 }
 
 /*!
@@ -98,5 +98,5 @@ bool INextionTouchable::attachCallback(INextionCallback *handler)
  */
 void INextionTouchable::detachCallback()
 {
-  m_callback = NULL;
+    m_callback = NULL;
 }

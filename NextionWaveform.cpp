@@ -22,18 +22,18 @@ NextionWaveform::NextionWaveform(Nextion &nex, uint8_t page, uint8_t component,
  */
 bool NextionWaveform::addValue(uint8_t channel, uint8_t value)
 {
-  if (channel > 3)
-    return false;
+    if (channel > 3)
+        return false;
 
-  size_t commandLen = 22;
-  char commandBuffer[commandLen];
-  snprintf(commandBuffer, commandLen, "add %d,%d,%d", m_componentID, channel,
-           value);
-  sendCommand(commandBuffer, false);
+    size_t commandLen = 22;
+    char commandBuffer[commandLen];
+    snprintf(commandBuffer, commandLen, "add %d,%d,%d", m_componentID, channel,
+             value);
+    sendCommand(commandBuffer, false);
 
-  /* TODO: this check still fails but the command does actually work */
-  /* return m_nextion.checkCommandComplete(); */
-  return true;
+    /* TODO: this check still fails but the command does actually work */
+    /* return m_nextion.checkCommandComplete(); */
+    return true;
 }
 
 /*!
@@ -46,9 +46,9 @@ bool NextionWaveform::addValue(uint8_t channel, uint8_t value)
 bool NextionWaveform::setChannelColour(uint8_t channel, uint32_t colour,
                                        bool refresh)
 {
-  char buffer[5];
-  snprintf(buffer, 5, "pco%d", channel);
-  return setColour(buffer, colour, refresh);
+    char buffer[5];
+    snprintf(buffer, 5, "pco%d", channel);
+    return setColour(buffer, colour, refresh);
 }
 
 /*!
@@ -58,9 +58,9 @@ bool NextionWaveform::setChannelColour(uint8_t channel, uint32_t colour,
  * \return True if successful */
 bool NextionWaveform::getChannelColour(uint8_t channel, uint32_t &colour)
 {
-  char buffer[5];
-  snprintf(buffer, 5, "pco%d", channel);
-  return getColour(buffer, colour);
+    char buffer[5];
+    snprintf(buffer, 5, "pco%d", channel);
+    return getColour(buffer, colour);
 }
 
 /*!
@@ -71,7 +71,7 @@ bool NextionWaveform::getChannelColour(uint8_t channel, uint32_t &colour)
  */
 bool NextionWaveform::setGridColour(uint32_t colour, bool refresh)
 {
-  return setColour("gdc", colour, refresh);
+    return setColour("gdc", colour, refresh);
 }
 
 /*!
@@ -80,7 +80,7 @@ bool NextionWaveform::setGridColour(uint32_t colour, bool refresh)
  * \return True if successful */
 bool NextionWaveform::getGridColour(uint32_t &colour)
 {
-  return getColour("gdc", colour);
+    return getColour("gdc", colour);
 }
 
 /*!
@@ -90,7 +90,7 @@ bool NextionWaveform::getGridColour(uint32_t &colour)
  */
 bool NextionWaveform::setGridWidth(uint16_t width)
 {
-  return setNumberProperty("gdw", width);
+    return setNumberProperty("gdw", width);
 }
 
 /*!
@@ -100,13 +100,13 @@ bool NextionWaveform::setGridWidth(uint16_t width)
  */
 bool NextionWaveform::getGridWidth(uint16_t &width)
 {
-  uint32_t value;
-  if (getNumberProperty("gdw", value))
-  {
-    width = value;
-    return true;
-  }
-  return false;
+    uint32_t value;
+    if (getNumberProperty("gdw", value))
+    {
+        width = value;
+        return true;
+    }
+    return false;
 }
 
 /*!
@@ -116,7 +116,7 @@ bool NextionWaveform::getGridWidth(uint16_t &width)
  */
 bool NextionWaveform::setGridHeight(uint16_t height)
 {
-  return setNumberProperty("gdh", height);
+    return setNumberProperty("gdh", height);
 }
 
 /*!
@@ -126,11 +126,11 @@ bool NextionWaveform::setGridHeight(uint16_t height)
  */
 bool NextionWaveform::getGridHeight(uint16_t &height)
 {
-  uint32_t value;
-  if (getNumberProperty("gdh", value))
-  {
-    height = value;
-    return true;
-  }
-  return false;
+    uint32_t value;
+    if (getNumberProperty("gdh", value))
+    {
+        height = value;
+        return true;
+    }
+    return false;
 }

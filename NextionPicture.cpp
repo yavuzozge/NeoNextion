@@ -20,13 +20,13 @@ NextionPicture::NextionPicture(Nextion &nex, uint8_t page, uint8_t component,
  */
 bool NextionPicture::getPictureID(uint16_t &id)
 {
-  uint32_t value;
-  if (getNumberProperty("pic", value))
-  {
-    id = value;
-    return true;
-  }
-  return false;
+    uint32_t value;
+    if (getNumberProperty("pic", value))
+    {
+        id = value;
+        return true;
+    }
+    return false;
 }
 
 /*!
@@ -36,5 +36,5 @@ bool NextionPicture::getPictureID(uint16_t &id)
  */
 bool NextionPicture::setPictureID(uint16_t id)
 {
-  return setNumberProperty("pic", id);
+    return setNumberProperty("pic", id);
 }

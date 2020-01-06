@@ -18,15 +18,15 @@ class NextionText : public INextionTouchable,
                     public INextionFontStyleable
 {
 public:
-  /*!
+    /*!
    * \copydoc INextionWidget::INextionWidget
    */
-  NextionText(Nextion &nex, uint8_t page, uint8_t component, const String &name)
-      : INextionWidget(nex, page, component, name)
-      , INextionTouchable(nex, page, component, name)
-      , INextionColourable(nex, page, component, name)
-      , INextionStringValued(nex, page, component, name)
-      , INextionFontStyleable(nex, page, component, name)
-  {
-  }
+    NextionText(Nextion &nex, uint8_t page, uint8_t component, const String &name)
+        : INextionWidget(nex, page, component, name)
+        , INextionTouchable(nex, page, component, name)
+        , INextionColourable(nex, page, component, name)
+        , INextionStringValued(nex, page, component, name)
+        , INextionFontStyleable(nex, page, component, name)
+    {
+    }
 };

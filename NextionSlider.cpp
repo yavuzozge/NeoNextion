@@ -21,7 +21,7 @@ NextionSlider::NextionSlider(Nextion &nex, uint8_t page, uint8_t component,
  */
 bool NextionSlider::getMinValue(uint32_t &value)
 {
-  return getNumberProperty("minval", value);
+    return getNumberProperty("minval", value);
 }
 
 /*!
@@ -31,7 +31,7 @@ bool NextionSlider::getMinValue(uint32_t &value)
  */
 bool NextionSlider::setMinValue(uint32_t value)
 {
-  return setNumberProperty("minval", value);
+    return setNumberProperty("minval", value);
 }
 
 /*!
@@ -41,7 +41,7 @@ bool NextionSlider::setMinValue(uint32_t value)
  */
 bool NextionSlider::getMaxValue(uint32_t &value)
 {
-  return getNumberProperty("maxval", value);
+    return getNumberProperty("maxval", value);
 }
 
 /*!
@@ -51,5 +51,5 @@ bool NextionSlider::getMaxValue(uint32_t &value)
  */
 bool NextionSlider::setMaxValue(uint32_t value)
 {
-  return setNumberProperty("maxval", value);
+    return setNumberProperty("maxval", value);
 }

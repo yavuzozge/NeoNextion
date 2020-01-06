@@ -15,34 +15,34 @@
 class INextionNumericalValued : public virtual INextionWidget
 {
 public:
-  /*!
+    /*!
    * \copydoc INextionWidget::INextionWidget
    */
-  INextionNumericalValued(Nextion &nex, uint8_t page, uint8_t component,
-                          const String &name)
-      : INextionWidget(nex, page, component, name)
-  {
-  }
+    INextionNumericalValued(Nextion &nex, uint8_t page, uint8_t component,
+                            const String &name)
+        : INextionWidget(nex, page, component, name)
+    {
+    }
 
-  /*!
+    /*!
    * \brief Gets the numerical value.
    * \param value Resulting value
    * \return True if successful
    * \see INextionNumericalValued::getValue
    */
-  bool getValue(uint32_t &value)
-  {
-    return getNumberProperty("val", value);
-  }
+    bool getValue(uint32_t &value)
+    {
+        return getNumberProperty("val", value);
+    }
 
-  /*!
+    /*!
    * \brief Sets the numerical value.
    * \param value Value
    * \return True if successful
    * \see INextionNumericalValued::setValue
    */
-  bool setValue(uint32_t value)
-  {
-    return setNumberProperty("val", value);
-  }
+    bool setValue(uint32_t value)
+    {
+        return setNumberProperty("val", value);
+    }
 };

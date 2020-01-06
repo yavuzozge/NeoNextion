@@ -20,7 +20,7 @@ INextionColourable::INextionColourable(Nextion &nex, uint8_t page,
  */
 bool INextionColourable::setForegroundColour(uint32_t colour, bool refresh)
 {
-  return setColour("pco", colour, refresh);
+    return setColour("pco", colour, refresh);
 }
 
 /*!
@@ -31,7 +31,7 @@ bool INextionColourable::setForegroundColour(uint32_t colour, bool refresh)
  */
 bool INextionColourable::getForegroundColour(uint32_t &colour)
 {
-  return getColour("pco", colour);
+    return getColour("pco", colour);
 }
 
 /*!
@@ -43,7 +43,7 @@ bool INextionColourable::getForegroundColour(uint32_t &colour)
  */
 bool INextionColourable::setEventForegroundColour(uint32_t colour, bool refresh)
 {
-  return setColour("pco2", colour, refresh);
+    return setColour("pco2", colour, refresh);
 }
 
 /*!
@@ -54,7 +54,7 @@ bool INextionColourable::setEventForegroundColour(uint32_t colour, bool refresh)
  */
 bool INextionColourable::getEventForegroundColour(uint32_t &colour)
 {
-  return getColour("pco2", colour);
+    return getColour("pco2", colour);
 }
 
 /*!
@@ -66,7 +66,7 @@ bool INextionColourable::getEventForegroundColour(uint32_t &colour)
  */
 bool INextionColourable::setBackgroundColour(uint32_t colour, bool refresh)
 {
-  return setColour("bco", colour, refresh);
+    return setColour("bco", colour, refresh);
 }
 
 /*!
@@ -77,7 +77,7 @@ bool INextionColourable::setBackgroundColour(uint32_t colour, bool refresh)
  */
 bool INextionColourable::getBackgroundColour(uint32_t &colour)
 {
-  return getColour("bco", colour);
+    return getColour("bco", colour);
 }
 
 /*!
@@ -89,7 +89,7 @@ bool INextionColourable::getBackgroundColour(uint32_t &colour)
  */
 bool INextionColourable::setEventBackgroundColour(uint32_t colour, bool refresh)
 {
-  return setColour("bco2", colour, refresh);
+    return setColour("bco2", colour, refresh);
 }
 
 /*!
@@ -100,7 +100,7 @@ bool INextionColourable::setEventBackgroundColour(uint32_t colour, bool refresh)
  */
 bool INextionColourable::getEventBackgroundColour(uint32_t &colour)
 {
-  return getColour("bco2", colour);
+    return getColour("bco2", colour);
 }
 
 /*!
@@ -113,7 +113,7 @@ bool INextionColourable::getEventBackgroundColour(uint32_t &colour)
 bool INextionColourable::setColour(const String &type, uint32_t colour,
                                    bool refresh)
 {
-  return afterSet(setNumberProperty(type, colour), refresh);
+    return afterSet(setNumberProperty(type, colour), refresh);
 }
 
 /*!
@@ -125,7 +125,7 @@ bool INextionColourable::setColour(const String &type, uint32_t colour,
  */
 bool INextionColourable::getColour(const String &type, uint32_t &colour)
 {
-  return getNumberProperty(type, colour);
+    return getNumberProperty(type, colour);
 }
 
 /*!
@@ -137,16 +137,16 @@ bool INextionColourable::getColour(const String &type, uint32_t &colour)
  */
 bool INextionColourable::afterSet(bool result, bool refresh)
 {
-  if (result)
-  {
-    if (refresh)
+    if (result)
     {
-      m_nextion.refresh(m_name);
-      return m_nextion.checkCommandComplete();
+        if (refresh)
+        {
+            m_nextion.refresh(m_name);
+            return m_nextion.checkCommandComplete();
+        }
+        else
+            return true;
     }
     else
-      return true;
-  }
-  else
-    return false;
+        return false;
 }

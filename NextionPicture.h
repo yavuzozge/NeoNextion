@@ -12,9 +12,9 @@
 class NextionPicture : public INextionTouchable
 {
 public:
-  NextionPicture(Nextion &nex, uint8_t page, uint8_t component,
-                 const String &name);
+    NextionPicture(Nextion &nex, uint8_t page, uint8_t component,
+                   const String &name);
 
-  bool getPictureID(uint16_t &id);
-  bool setPictureID(uint16_t id);
+    bool getPictureID(uint16_t &id);
+    bool setPictureID(uint16_t id);
 };

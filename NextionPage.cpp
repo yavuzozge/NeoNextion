@@ -17,16 +17,16 @@ NextionPage::NextionPage(Nextion &nex, uint8_t page, uint8_t component,
  */
 bool NextionPage::show()
 {
-  bool shown;
-  if (!isShown(shown))
-  {
-    return false;
-  }
-  if(shown)
-  {
-    return true;
-  }
-  return sendCommandWithWait("page %s", m_name.c_str());
+    bool shown;
+    if (!isShown(shown))
+    {
+        return false;
+    }
+    if (shown)
+    {
+        return true;
+    }
+    return sendCommandWithWait("page %s", m_name.c_str());
 }
 
 /*!
@@ -36,11 +36,11 @@ bool NextionPage::show()
  */
 bool NextionPage::isShown(bool shown)
 {
-  uint8_t id;
-  if(m_nextion.getCurrentPage(id))
-  {
-    shown = id == m_pageID;
-    return true;
-  }
-  return false;
+    uint8_t id;
+    if (m_nextion.getCurrentPage(id))
+    {
+        shown = id == m_pageID;
+        return true;
+    }
+    return false;
 }
