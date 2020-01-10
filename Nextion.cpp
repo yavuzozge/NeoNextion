@@ -52,9 +52,6 @@ Nextion::Nextion(Stream &stream, uint16_t timeout)
     : m_serialPort(stream)
     , m_timeout(timeout)
 {
-    // We do our own timeout meanagement
-    stream.setTimeout(0);
-
     m_buffer.reserve(32);
     m_solicitedBuffer.reserve(32);
     m_unsolicitedBuffer.reserve(16);
@@ -121,33 +118,29 @@ void Nextion::readSolicited(
  */
 void Nextion::readMessage(bool waitForSolicited)
 {
-    if (waitForSolicited)
-    {
-        // Wait for the first byte
-        uint64_t start = millis();
-        while (millis() - start <= m_timeout && m_serialPort.available() == 0)
-        {
-            delay(50);
-        }
-    }
-
-    if (m_serialPort.available() == 0)
+    if(!waitForSolicited && m_serialPort.available() == 0)
     {
         return;
     }
 
-    uint64_t start = millis();
-    int read;
-    while (millis() - start <= m_timeout)
+    int read = 0;
+    uint64_t startMillis = 0;
+    while (true)
     {
-        read = m_serialPort.read();
-        if (read < 0)
+        startMillis = millis();
+        while(true) 
         {
-            delay(50);
-            continue;
+            read = m_serialPort.read();
+            if(read >= 0) 
+            {
+                break;
+            }
+            if(millis() - startMillis > m_timeout)
+            {
+                return;
+            }
         }
-
-        m_buffer.push_back((uint8_t)(read));
+        m_buffer.push_back(static_cast<uint8_t>(read));
         std::size_t size = m_buffer.size();
         if (size >= 3 && m_buffer[size - 3] == 0xFF && m_buffer[size - 2] == 0xFF &&
             m_buffer[size - 1] == 0xFF)
