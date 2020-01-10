@@ -190,21 +190,27 @@ void Nextion::processUnsolicited()
         switch (m_unsolicitedBuffer[start])
         {
         case NEX_RET_EVENT_TOUCH_HEAD:
+        if (length != 4)
         {
-            if (length != 4)
+            NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_TOUCH_HEAD did "
+                        "not get all the data.\n");
+        }
+        else
+        {
+            NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_TOUCH_HEAD processed. pageID: %u, componentID: %u, eventType: %u\n",
+                m_unsolicitedBuffer[start + 1],
+                m_unsolicitedBuffer[start + 2],
+                m_unsolicitedBuffer[start + 3]);
+            
+            for (auto iter = m_touchableList.cbegin(); iter != m_touchableList.cend(); ++iter)
             {
-                NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_TOUCH_HEAD did "
-                           "not get all the data.\n");
+                if((*iter)->processEvent(m_unsolicitedBuffer[start + 1],
+                                    m_unsolicitedBuffer[start + 2],
+                                    m_unsolicitedBuffer[start + 3]))
+                {
+                    NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_TOUCH_HEAD accepted by: %s\n", (*iter)->getName().c_str());
+                }
             }
-            for (auto iter = m_touchableList.cbegin(); iter != m_touchableList.cend();
-                 ++iter)
-            {
-                (*iter)->processEvent(m_unsolicitedBuffer[start + 1],
-                                      m_unsolicitedBuffer[start + 2],
-                                      m_unsolicitedBuffer[start + 3]);
-            }
-            NextionLog(
-                "Nextion::processUnsolicited: NEX_RET_EVENT_TOUCH_HEAD processed.\n");
         }
         break;
 
@@ -326,27 +332,42 @@ bool Nextion::getCurrentPage(uint8_t &id)
 {
     sendCommand("sendme");
     bool result = false;
-    readSolicited(
-        [&id, &result](const std::vector<uint8_t> &buffer, std::size_t length) {
-            if (length < 2)
-            {
-                NextionLog("Nextion::getCurrentPage: Reading response timed out. "
-                           "Bytes read: %u\n",
-                           length);
-            }
-            else if (buffer[0] == NEX_RET_CURRENT_PAGE_ID_HEAD)
-            {
-                NextionLog("Nextion::getCurrentPage: %d\n", buffer[1]);
-                id = buffer[1];
-                result = true;
-            }
-            else
-            {
-                NextionLog("Nextion::getCurrentPage: Unexpected response: 0x%x\n",
-                           buffer[0]);
-            }
-        });
-
+    bool exit = false;
+    while(!exit)
+    {
+        readSolicited(
+            [this, &id, &result, &exit](const std::vector<uint8_t> &buffer, std::size_t length) {
+                if (length == 0)
+                {
+                    NextionLog("Nextion::getCurrentPage: Reading response timed out.\n");
+                    exit = true;
+                }
+                else if(length == 1)
+                {
+                    result = checkCommandCompleteIntrn(buffer, length);
+                    if(!result)
+                    {
+                        exit = true;
+                    }
+                }
+                else
+                {
+                    if (buffer[0] == NEX_RET_CURRENT_PAGE_ID_HEAD)
+                    {
+                        id = buffer[1];
+                        NextionLog("Nextion::getCurrentPage: %d\n", id);
+                        result = true;
+                        exit = true;
+                    }
+                    else
+                    {
+                        NextionLog("Nextion::getCurrentPage: Unexpected response: 0x%x\n",
+                                buffer[0]);
+                        exit = true;
+                    }
+                }
+            });
+    }
     return result;
 }
 
@@ -529,85 +550,93 @@ void Nextion::sendCommand(const char *format, va_list args)
  * \brief Checks if the last command was successful.
  * \return True if command was successful
  */
+bool Nextion::checkCommandCompleteIntrn(const std::vector<uint8_t> &buffer, std::size_t length)
+{
+    if (length == 0)
+    {
+        NextionLog(
+            "Nextion::checkCommandComplete: Reading response timed out.\n");
+        return false;
+    }
+    switch (buffer[0])
+    {
+    case NEX_RET_CMD_FAILED:
+        NextionLog("Nextion::checkCommandComplete: NEX_RET_CMD_FAILED\n");
+        return false;
+    case NEX_RET_CMD_FINISHED:
+        NextionLog("Nextion::checkCommandComplete: OK\n");
+        return true;
+    case NEX_RET_INVALID_COMPONENT_ID:
+        NextionLog(
+            "Nextion::checkCommandComplete: NEX_RET_INVALID_COMPONENT_ID\n");
+        return false;
+    case NEX_RET_INVALID_PAGE_ID:
+        NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_PAGE_ID\n");
+        return false;
+    case NEX_RET_INVALID_PICTURE_ID:
+        NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_PICTURE_ID\n");
+        return false;
+    case NEX_RET_INVALID_FONT_ID:
+        NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_FONT_ID\n");
+        return false;
+    case NEX_RET_INVALID_FILE_OP:
+        NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_FILE_OP\n");
+        return false;
+    case NEX_RET_INVALID_CRC:
+        NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_CRC\n");
+        return false;
+    case NEX_RET_INVALID_BAUD:
+        NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_BAUD\n");
+        return false;
+    case NEX_RET_INVALID_WAVEFORM_ID_CHANNEL:
+        NextionLog("Nextion::checkCommandComplete: "
+                    "NEX_RET_INVALID_WAVEFORM_ID_CHANNEL\n");
+        return false;
+    case NEX_RET_INVALID_VARIABLE:
+        NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_VARIABLE\n");
+        return false;
+    case NEX_RET_INVALID_OPERATION:
+        NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_OPERATION\n");
+        return false;
+    case NEX_RET_FAILED_TO_ASSIGN:
+        NextionLog("Nextion::checkCommandComplete: NEX_RET_FAILED_TO_ASSIGN\n");
+        return false;
+    case NEX_RET_EEPROM_OP_FAILED:
+        NextionLog("Nextion::checkCommandComplete: NEX_RET_EEPROM_OP_FAILED\n");
+        return false;
+    case NEX_RET_INVALID_NUM_PARAMS:
+        NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_NUM_PARAMS\n");
+        return false;
+    case NEX_RET_IO_OP_FAILED:
+        NextionLog("Nextion::checkCommandComplete: NEX_RET_IO_OP_FAILED\n");
+        return false;
+    case NEX_RET_INVALID_ESCAPE_CHAR:
+        NextionLog(
+            "Nextion::checkCommandComplete: NEX_RET_INVALID_ESCAPE_CHAR\n");
+        return false;
+    case NEX_RET_VAR_NAME_TOO_LONG:
+        NextionLog("Nextion::checkCommandComplete: NEX_RET_VAR_NAME_TOO_LONG\n");
+        return false;
+    case NEX_RET_SERIAL_BUFFER_OVERFLOW:
+        NextionLog(
+            "Nextion::checkCommandComplete: NEX_RET_SERIAL_BUFFER_OVERFLOW\n");
+        return false;
+    default:
+        NextionLog("Nextion::checkCommandComplete: Unexpected response: 0x%x\n",
+                    buffer[0]);
+        return false;
+    }
+}
+
+/*!
+ * \brief Checks if the last command was successful.
+ * \return True if command was successful
+ */
 bool Nextion::checkCommandComplete()
 {
     bool result = false;
-    readSolicited([&result](const std::vector<uint8_t> &buffer,
-                            std::size_t length) {
-        if (length == 0)
-        {
-            NextionLog(
-                "Nextion::checkCommandComplete: Reading response timed out.\n");
-            return;
-        }
-        switch (buffer[0])
-        {
-        case NEX_RET_CMD_FAILED:
-            NextionLog("Nextion::checkCommandComplete: NEX_RET_CMD_FAILED\n");
-            return;
-        case NEX_RET_CMD_FINISHED:
-            NextionLog("Nextion::checkCommandComplete: OK\n");
-            result = true;
-            return;
-        case NEX_RET_INVALID_COMPONENT_ID:
-            NextionLog(
-                "Nextion::checkCommandComplete: NEX_RET_INVALID_COMPONENT_ID\n");
-            return;
-        case NEX_RET_INVALID_PAGE_ID:
-            NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_PAGE_ID\n");
-            return;
-        case NEX_RET_INVALID_PICTURE_ID:
-            NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_PICTURE_ID\n");
-            return;
-        case NEX_RET_INVALID_FONT_ID:
-            NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_FONT_ID\n");
-            return;
-        case NEX_RET_INVALID_FILE_OP:
-            NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_FILE_OP\n");
-            return;
-        case NEX_RET_INVALID_CRC:
-            NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_CRC\n");
-            return;
-        case NEX_RET_INVALID_BAUD:
-            NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_BAUD\n");
-            return;
-        case NEX_RET_INVALID_WAVEFORM_ID_CHANNEL:
-            NextionLog("Nextion::checkCommandComplete: "
-                       "NEX_RET_INVALID_WAVEFORM_ID_CHANNEL\n");
-            return;
-        case NEX_RET_INVALID_VARIABLE:
-            NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_VARIABLE\n");
-            return;
-        case NEX_RET_INVALID_OPERATION:
-            NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_OPERATION\n");
-            return;
-        case NEX_RET_FAILED_TO_ASSIGN:
-            NextionLog("Nextion::checkCommandComplete: NEX_RET_FAILED_TO_ASSIGN\n");
-            return;
-        case NEX_RET_EEPROM_OP_FAILED:
-            NextionLog("Nextion::checkCommandComplete: NEX_RET_EEPROM_OP_FAILED\n");
-            return;
-        case NEX_RET_INVALID_NUM_PARAMS:
-            NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_NUM_PARAMS\n");
-            return;
-        case NEX_RET_IO_OP_FAILED:
-            NextionLog("Nextion::checkCommandComplete: NEX_RET_IO_OP_FAILED\n");
-            return;
-        case NEX_RET_INVALID_ESCAPE_CHAR:
-            NextionLog(
-                "Nextion::checkCommandComplete: NEX_RET_INVALID_ESCAPE_CHAR\n");
-            return;
-        case NEX_RET_VAR_NAME_TOO_LONG:
-            NextionLog("Nextion::checkCommandComplete: NEX_RET_VAR_NAME_TOO_LONG\n");
-            return;
-        case NEX_RET_SERIAL_BUFFER_OVERFLOW:
-            NextionLog(
-                "Nextion::checkCommandComplete: NEX_RET_SERIAL_BUFFER_OVERFLOW\n");
-            return;
-        default:
-            NextionLog("Nextion::checkCommandComplete: Unexpected response: 0x%x\n",
-                       buffer[0]);
-        }
+    readSolicited([this, &result](const std::vector<uint8_t> &buffer, std::size_t length) {
+        result = checkCommandCompleteIntrn(buffer, length);
     });
 
     return result;

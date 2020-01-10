@@ -77,8 +77,9 @@ private:
     std::vector<uint8_t> m_solicitedBuffer;
     std::vector<uint8_t> m_unsolicitedBuffer;
 
-    void
-    readSolicited(const std::function<void(const std::vector<uint8_t> &buffer,
+    bool checkCommandCompleteIntrn(const std::vector<uint8_t> &buffer,
+                                           std::size_t length);
+    void readSolicited(const std::function<void(const std::vector<uint8_t> &buffer,
                                            std::size_t length)> &callback);
     void readMessage(bool waitForSolicited);
     void processUnsolicited();

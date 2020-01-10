@@ -56,6 +56,15 @@ uint8_t INextionWidget::getComponentID()
 }
 
 /*!
+ * \brief Gets the name of this widget.
+ * \return Name
+ */
+const String& INextionWidget::getName() const
+{
+    return m_name;
+}
+
+/*!
  * \brief Sets the value of a numerical property of this widget.
  * \param propertyName Name of the property
  * \param value Value

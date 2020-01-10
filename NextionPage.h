@@ -16,5 +16,5 @@ public:
                 const String &name);
 
     bool show();
-    bool isShown(bool shown);
+    bool isShown(bool currentlyShown);
 };

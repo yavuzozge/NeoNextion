@@ -21,6 +21,7 @@ public:
     void setInitialVisibility(bool visible);
     uint8_t getPageID();
     uint8_t getComponentID();
+    const String& getName() const;
 
     bool setNumberProperty(const String &propertyName, uint32_t value);
     bool getNumberProperty(const String &propertyName, uint32_t &value);
