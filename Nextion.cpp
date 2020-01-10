@@ -425,8 +425,19 @@ bool Nextion::drawStr(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
                       NextionFontAlignment xCentre,
                       NextionFontAlignment yCentre)
 {
-    sendCommand("xstr %d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%s", x, y, w, h, fontID,
-                fgColour, bgColour, xCentre, yCentre, bgType, str.c_str());
+    if(str.indexOf('\"') >= 0)
+    {
+        String strEscaped(str);
+        strEscaped.replace("\"", "\\\"");
+        sendCommand("xstr %d,%d,%d,%d,%d,%d,%d,%d,%d,%d,\"%s\"", x, y, w, h, fontID,
+                fgColour, bgColour, xCentre, yCentre, bgType, strEscaped.c_str());
+    } 
+    else
+    {
+        sendCommand("xstr %d,%d,%d,%d,%d,%d,%d,%d,%d,%d,\"%s\"", x, y, w, h, fontID,
+                    fgColour, bgColour, xCentre, yCentre, bgType, str.c_str());
+
+    }
     return checkCommandComplete();
 }
 
