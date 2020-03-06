@@ -51,6 +51,7 @@ static bool findMessage(const std::vector<uint8_t> &buffer, std::size_t start,
 Nextion::Nextion(Stream &stream, uint16_t timeout)
     : m_serialPort(stream)
     , m_timeout(timeout)
+    , m_commandResultRequired(false)
 {
     m_buffer.reserve(32);
     m_solicitedBuffer.reserve(32);
@@ -65,14 +66,39 @@ bool Nextion::init()
 {
     m_buffer.clear();
 
-    sendCommand("bkcmd=3");
-    bool result1 = checkCommandComplete();
+    bool result1 = requireCommandResult(true);
 
     sendCommand("page 0");
     bool result2 = checkCommandComplete();
 
     return result1 && result2;
 }
+
+/*!
+ * \brief Sets whether the device should return command results
+ * \param require If true then sets the device return commands both success nand failure results.
+ * \return True if successful
+ */
+bool Nextion::requireCommandResult(bool require)
+{
+    if(require)
+    {
+        sendCommand("bkcmd=3");
+        if(checkCommandComplete())
+        {
+            m_commandResultRequired = true;
+            return true;
+        }
+        return false;
+    }
+    else
+    {
+        sendCommand("bkcmd=0");
+        m_commandResultRequired = false;
+        return true;
+    }
+}
+
 
 /*!
  * \brief Polls for unsolicited messages (e.g. touch events) and processes them
@@ -85,7 +111,8 @@ void Nextion::poll()
 
 /*!
  * \brief Tries to read a solicited message and calls the callback if one is
- * read. \param callback Callback
+ * read. 
+ * \param callback Callback
  */
 void Nextion::readSolicited(
     const std::function<void(const std::vector<uint8_t> &buffer,
@@ -114,7 +141,8 @@ void Nextion::readSolicited(
 
 /*!
  * \brief Reads a message from the device and places it to its respective
- * buffer. \param waitForSolicited Whether to wait for a solicited message
+ * buffer. 
+ * \param waitForSolicited Whether to wait for a solicited message
  */
 void Nextion::readMessage(bool waitForSolicited)
 {
@@ -486,12 +514,20 @@ bool Nextion::drawRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
  * \param x X position
  * \param y Y position
  * \param r Radius
+ * \param filled If the rectangle should be filled with a solid colour
  * \param colour Colour
  * \return True if successful
  */
-bool Nextion::drawCircle(uint16_t x, uint16_t y, uint16_t r, uint32_t colour)
+bool Nextion::drawCircle(uint16_t x, uint16_t y, uint16_t r, bool filled, uint32_t colour)
 {
-    sendCommand("cir %d,%d,%d,%d", x, y, r, colour);
+    if (filled)
+    {
+        sendCommand("cirs %d,%d,%d,%d", x, y, r, colour);
+    }
+    else
+    {
+        sendCommand("cir %d,%d,%d,%d", x, y, r, colour);
+    }
     return checkCommandComplete();
 }
 
@@ -638,6 +674,11 @@ bool Nextion::checkCommandCompleteIntrn(const std::vector<uint8_t> &buffer, std:
  */
 bool Nextion::checkCommandComplete()
 {
+    if(!m_commandResultRequired)
+    {
+        return true;
+    }
+
     bool result = false;
     readSolicited([this, &result](const std::vector<uint8_t> &buffer, std::size_t length) {
         result = checkCommandCompleteIntrn(buffer, length);
