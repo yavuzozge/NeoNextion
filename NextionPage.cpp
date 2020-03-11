@@ -17,14 +17,7 @@ NextionPage::NextionPage(Nextion &nex, uint8_t page, uint8_t component,
  */
 bool NextionPage::show()
 {
-    bool currentlyShown;
-    if (!isShown(currentlyShown))
-    {
-        return false;
-    }
-    return currentlyShown
-        ? true
-        : sendCommandWithWait("page %s", m_name.c_str());
+    return sendCommandWithWait("page %s", m_name.c_str());
 }
 
 /*!
