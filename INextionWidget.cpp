@@ -9,8 +9,7 @@
  * \param component Component ID of this widget
  * \param name Name of this widget
  */
-INextionWidget::INextionWidget(Nextion &nex, uint8_t page, uint8_t component,
-                               const String &name)
+INextionWidget::INextionWidget(Nextion &nex, uint8_t page, uint8_t component, const String &name)
     : m_nextion(nex)
     , m_pageID(page)
     , m_componentID(component)
@@ -59,7 +58,7 @@ uint8_t INextionWidget::getComponentID()
  * \brief Gets the name of this widget.
  * \return Name
  */
-const String& INextionWidget::getName() const
+const String &INextionWidget::getName() const
 {
     return m_name;
 }
@@ -70,11 +69,9 @@ const String& INextionWidget::getName() const
  * \param value Value
  * \return True if successful
  */
-bool INextionWidget::setNumberProperty(const String &propertyName,
-                                       uint32_t value)
+bool INextionWidget::setNumberProperty(const String &propertyName, uint32_t value)
 {
-    return sendCommandWithWait("%s.%s=%d", m_name.c_str(), propertyName.c_str(),
-                               value);
+    return sendCommandWithWait("%s.%s=%d", m_name.c_str(), propertyName.c_str(), value);
 }
 
 /*!
@@ -83,8 +80,7 @@ bool INextionWidget::setNumberProperty(const String &propertyName,
  * \param value Reference to variable to store result in
  * \return True if successful
  */
-bool INextionWidget::getNumberProperty(const String &propertyName,
-                                       uint32_t &value)
+bool INextionWidget::getNumberProperty(const String &propertyName, uint32_t &value)
 {
     sendCommandWithWait("get %s.%s", m_name.c_str(), propertyName.c_str());
     return m_nextion.receiveNumber(value);
@@ -96,11 +92,9 @@ bool INextionWidget::getNumberProperty(const String &propertyName,
  * \param value Value
  * \return True if successful
  */
-bool INextionWidget::setStringProperty(const String &propertyName,
-                                       const String &value)
+bool INextionWidget::setStringProperty(const String &propertyName, const String &value)
 {
-    return sendCommandWithWait("%s.%s=\"%s\"", m_name.c_str(),
-                               propertyName.c_str(), value.c_str());
+    return sendCommandWithWait("%s.%s=\"%s\"", m_name.c_str(), propertyName.c_str(), value.c_str());
 }
 
 /*!
@@ -109,8 +103,7 @@ bool INextionWidget::setStringProperty(const String &propertyName,
  * \param value Reference to String to store result in
  * \return Actual length of value
  */
-size_t INextionWidget::getStringProperty(const String &propertyName,
-                                         String &buffer)
+size_t INextionWidget::getStringProperty(const String &propertyName, String &buffer)
 {
     sendCommandWithWait("get %s.%s", m_name.c_str(), propertyName.c_str());
     return m_nextion.receiveString(buffer);

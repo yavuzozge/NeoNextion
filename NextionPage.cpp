@@ -5,8 +5,7 @@
 /*!
  * \copydoc INextionWidget::INextionWidget
  */
-NextionPage::NextionPage(Nextion &nex, uint8_t page, uint8_t component,
-                         const String &name)
+NextionPage::NextionPage(Nextion &nex, uint8_t page, uint8_t component, const String &name)
     : INextionWidget(nex, page, component, name)
 {
 }
@@ -25,7 +24,7 @@ bool NextionPage::show()
  * \param currentlyShown Whether the page is shown
  * \return True if successful
  */
-bool NextionPage::isShown(bool currentlyShown)
+bool NextionPage::isShown(bool &currentlyShown)
 {
     uint8_t id;
     if (m_nextion.getCurrentPage(id))

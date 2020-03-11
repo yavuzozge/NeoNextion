@@ -5,10 +5,8 @@
 /*!
  * \copydoc INextionWidget::INextionWidget
  */
-INextionTouchable::INextionTouchable(Nextion &nex, uint8_t page,
-                                     uint8_t component, const String &name)
+INextionTouchable::INextionTouchable(Nextion &nex, uint8_t page, uint8_t component, const String &name)
     : INextionWidget(nex, page, component, name)
-    , m_callback(NULL)
 {
     m_nextion.registerTouchable(this);
 }
@@ -28,21 +26,26 @@ INextionTouchable::~INextionTouchable()
  * \param eventType Type of touch event
  * \return True if the event effects this widget
  */
-bool INextionTouchable::processEvent(uint8_t pageID, uint8_t componentID,
-                                     uint8_t eventType)
+bool INextionTouchable::processEvent(uint8_t pageID, uint8_t componentID, uint8_t eventType)
 {
     if (pageID != m_pageID)
+    {
         return false;
+    }
 
     if (componentID != m_componentID)
+    {
         return false;
+    }
 
     switch (eventType)
     {
     case NEX_EVENT_PUSH:
     case NEX_EVENT_POP:
         if (m_callback)
-            m_callback->handleNextionEvent((NextionEventType)eventType, this);
+        {
+            m_callback((NextionEventType)eventType, this);
+        }
         return true;
 
     default:
@@ -52,47 +55,25 @@ bool INextionTouchable::processEvent(uint8_t pageID, uint8_t componentID,
 
 /*!
  * \brief Attaches a callback function to this widget.
- * \param function Pointer to callback function
+ * \param callback Callback function
  * \return True if successful
  * \see INextionTouchable::detachCallback
  */
-bool INextionTouchable::attachCallback(
-    const NextionCallbackFunctionHandler::NextionFunction &function)
+bool INextionTouchable::attachCallback(const NextionCallback &callback)
 {
-    if (!function)
+    if (!callback)
+    {
         return false;
+    }
 
-    if (m_callback != NULL)
-        detachCallback();
-
-    m_callback = new NextionCallbackFunctionHandler(function);
-    return true;
-}
-
-/*!
- * \brief Attaches a callback handler to this widget.
- * \param handler Pointer to handler
- * \return True if successful
- * \see INextionTouchable::detachCallback
- */
-bool INextionTouchable::attachCallback(INextionCallback *handler)
-{
-    if (!handler)
-        return false;
-
-    if (m_callback != NULL)
-        detachCallback();
-
-    m_callback = handler;
+    m_callback = callback;
     return true;
 }
 
 /*!
  * \brief Removes the callback handler from this widget
- *
- * Memory is not freed.
  */
 void INextionTouchable::detachCallback()
 {
-    m_callback = NULL;
+    m_callback = nullptr;
 }

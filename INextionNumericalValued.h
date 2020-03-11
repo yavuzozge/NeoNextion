@@ -18,8 +18,7 @@ public:
     /*!
    * \copydoc INextionWidget::INextionWidget
    */
-    INextionNumericalValued(Nextion &nex, uint8_t page, uint8_t component,
-                            const String &name)
+    INextionNumericalValued(Nextion &nex, uint8_t page, uint8_t component, const String &name)
         : INextionWidget(nex, page, component, name)
     {
     }

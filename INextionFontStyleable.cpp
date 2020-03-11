@@ -5,7 +5,8 @@
 /*!
  * \copydoc INextionWidget::INextionWidget
  */
-INextionFontStyleable::INextionFontStyleable(Nextion &nex, uint8_t page,
+INextionFontStyleable::INextionFontStyleable(Nextion &nex,
+                                             uint8_t page,
                                              uint8_t component,
                                              const String &name)
     : INextionWidget(nex, page, component, name)
@@ -48,8 +49,7 @@ bool INextionFontStyleable::getFont(uint8_t &id)
  * \return True if successful
  * \see INextionFontStyleable::getHAlignment
  */
-bool INextionFontStyleable::setHAlignment(NextionFontAlignment align,
-                                          bool refresh)
+bool INextionFontStyleable::setHAlignment(NextionFontAlignment align, bool refresh)
 {
     return afterSet(setNumberProperty("xcen", align), refresh);
 }
@@ -78,8 +78,7 @@ bool INextionFontStyleable::getHAlignment(NextionFontAlignment &align)
  * \return True if successful
  * \see INextionFontStyleable::getVAlignment
  */
-bool INextionFontStyleable::setVAlignment(NextionFontAlignment align,
-                                          bool refresh)
+bool INextionFontStyleable::setVAlignment(NextionFontAlignment align, bool refresh)
 {
     return afterSet(setNumberProperty("ycen", align), refresh);
 }

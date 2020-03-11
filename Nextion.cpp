@@ -24,13 +24,13 @@ static bool isMessageUnsolicited(uint8_t commandId)
 }
 
 /*!
- * \brief Finds a message in the buffer.
+ * \brief Calculates the message length in a buffer.
  * \param buffer Message buffer
  * \param start Start index
  * \param length Length of the message (including termination bytes) found
  * \return True if a message was found.
  */
-static bool findMessage(const std::vector<uint8_t> &buffer, std::size_t start,
+static bool calcMessageLength(const std::vector<uint8_t> &buffer, std::size_t start,
                         std::size_t &length)
 {
     for (std::size_t i = start + 2; i < buffer.size(); ++i)
@@ -81,10 +81,10 @@ bool Nextion::init()
  */
 bool Nextion::requireCommandResult(bool require)
 {
-    if(require)
+    if (require)
     {
         sendCommand("bkcmd=3");
-        if(checkCommandComplete())
+        if (checkCommandComplete())
         {
             m_commandResultRequired = true;
             return true;
@@ -98,7 +98,6 @@ bool Nextion::requireCommandResult(bool require)
         return true;
     }
 }
-
 
 /*!
  * \brief Polls for unsolicited messages (e.g. touch events) and processes them
@@ -120,7 +119,7 @@ void Nextion::readSolicited(
 {
     readMessage(true);
     std::size_t length = 0;
-    if (findMessage(m_solicitedBuffer, 0, length))
+    if (calcMessageLength(m_solicitedBuffer, 0, length))
     {
         callback(m_solicitedBuffer, length);
         if (m_solicitedBuffer.size() == length + 3)
@@ -146,7 +145,7 @@ void Nextion::readSolicited(
  */
 void Nextion::readMessage(bool waitForSolicited)
 {
-    if(!waitForSolicited && m_serialPort.available() == 0)
+    if (!waitForSolicited && m_serialPort.available() == 0)
     {
         return;
     }
@@ -156,14 +155,14 @@ void Nextion::readMessage(bool waitForSolicited)
     while (true)
     {
         startMillis = millis();
-        while(true) 
+        while (true)
         {
             read = m_serialPort.read();
-            if(read >= 0) 
+            if (read >= 0)
             {
                 break;
             }
-            if(millis() - startMillis > m_timeout)
+            if (millis() - startMillis > m_timeout)
             {
                 return;
             }
@@ -206,34 +205,34 @@ void Nextion::processUnsolicited()
 {
     std::size_t start = 0;
     std::size_t length = 0;
-    while (findMessage(m_unsolicitedBuffer, start, length))
+    while (calcMessageLength(m_unsolicitedBuffer, start, length))
     {
         switch (m_unsolicitedBuffer[start])
         {
         case NEX_RET_EVENT_TOUCH_HEAD:
-        if (length != 4)
-        {
-            NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_TOUCH_HEAD did "
-                        "not get all the data.\n");
-        }
-        else
-        {
-            NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_TOUCH_HEAD processed. pageID: %u, componentID: %u, eventType: %u\n",
-                m_unsolicitedBuffer[start + 1],
-                m_unsolicitedBuffer[start + 2],
-                m_unsolicitedBuffer[start + 3]);
-            
-            for (auto iter = m_touchableList.cbegin(); iter != m_touchableList.cend(); ++iter)
+            if (length != 4)
             {
-                if((*iter)->processEvent(m_unsolicitedBuffer[start + 1],
-                                    m_unsolicitedBuffer[start + 2],
-                                    m_unsolicitedBuffer[start + 3]))
+                NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_TOUCH_HEAD did "
+                           "not get all the data.\n");
+            }
+            else
+            {
+                NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_TOUCH_HEAD processed. pageID: %u, componentID: %u, eventType: %u\n",
+                           m_unsolicitedBuffer[start + 1],
+                           m_unsolicitedBuffer[start + 2],
+                           m_unsolicitedBuffer[start + 3]);
+
+                for (auto iter = m_touchableList.cbegin(); iter != m_touchableList.cend(); ++iter)
                 {
-                    NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_TOUCH_HEAD accepted by: %s\n", (*iter)->getName().c_str());
+                    if ((*iter)->processEvent(m_unsolicitedBuffer[start + 1],
+                                              m_unsolicitedBuffer[start + 2],
+                                              m_unsolicitedBuffer[start + 3]))
+                    {
+                        NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_TOUCH_HEAD accepted by: %s\n", (*iter)->getName().c_str());
+                    }
                 }
             }
-        }
-        break;
+            break;
 
         case NEX_RET_EVENT_POSITION_HEAD:
             NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_POSITION_HEAD not "
@@ -354,7 +353,7 @@ bool Nextion::getCurrentPage(uint8_t &id)
     sendCommand("sendme");
     bool result = false;
     bool exit = false;
-    while(!exit)
+    while (!exit)
     {
         readSolicited(
             [this, &id, &result, &exit](const std::vector<uint8_t> &buffer, std::size_t length) {
@@ -363,10 +362,10 @@ bool Nextion::getCurrentPage(uint8_t &id)
                     NextionLog("Nextion::getCurrentPage: Reading response timed out.\n");
                     exit = true;
                 }
-                else if(length == 1)
+                else if (length == 1)
                 {
                     result = checkCommandCompleteIntrn(buffer, length);
-                    if(!result)
+                    if (!result)
                     {
                         exit = true;
                     }
@@ -383,7 +382,7 @@ bool Nextion::getCurrentPage(uint8_t &id)
                     else
                     {
                         NextionLog("Nextion::getCurrentPage: Unexpected response: 0x%x\n",
-                                buffer[0]);
+                                   buffer[0]);
                         exit = true;
                     }
                 }
@@ -453,18 +452,17 @@ bool Nextion::drawStr(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
                       NextionFontAlignment xCentre,
                       NextionFontAlignment yCentre)
 {
-    if(str.indexOf('\"') >= 0)
+    if (str.indexOf('\"') >= 0)
     {
         String strEscaped(str);
         strEscaped.replace("\"", "\\\"");
         sendCommand("xstr %d,%d,%d,%d,%d,%d,%d,%d,%d,%d,\"%s\"", x, y, w, h, fontID,
-                fgColour, bgColour, xCentre, yCentre, bgType, strEscaped.c_str());
-    } 
+                    fgColour, bgColour, xCentre, yCentre, bgType, strEscaped.c_str());
+    }
     else
     {
         sendCommand("xstr %d,%d,%d,%d,%d,%d,%d,%d,%d,%d,\"%s\"", x, y, w, h, fontID,
                     fgColour, bgColour, xCentre, yCentre, bgType, str.c_str());
-
     }
     return checkCommandComplete();
 }
@@ -630,7 +628,7 @@ bool Nextion::checkCommandCompleteIntrn(const std::vector<uint8_t> &buffer, std:
         return false;
     case NEX_RET_INVALID_WAVEFORM_ID_CHANNEL:
         NextionLog("Nextion::checkCommandComplete: "
-                    "NEX_RET_INVALID_WAVEFORM_ID_CHANNEL\n");
+                   "NEX_RET_INVALID_WAVEFORM_ID_CHANNEL\n");
         return false;
     case NEX_RET_INVALID_VARIABLE:
         NextionLog("Nextion::checkCommandComplete: NEX_RET_INVALID_VARIABLE\n");
@@ -663,7 +661,7 @@ bool Nextion::checkCommandCompleteIntrn(const std::vector<uint8_t> &buffer, std:
         return false;
     default:
         NextionLog("Nextion::checkCommandComplete: Unexpected response: 0x%x\n",
-                    buffer[0]);
+                   buffer[0]);
         return false;
     }
 }
@@ -674,7 +672,7 @@ bool Nextion::checkCommandCompleteIntrn(const std::vector<uint8_t> &buffer, std:
  */
 bool Nextion::checkCommandComplete()
 {
-    if(!m_commandResultRequired)
+    if (!m_commandResultRequired)
     {
         return true;
     }

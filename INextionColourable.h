@@ -13,8 +13,7 @@
 class INextionColourable : public virtual INextionWidget
 {
 public:
-    INextionColourable(Nextion &nex, uint8_t page, uint8_t component,
-                       const String &name);
+    INextionColourable(Nextion &nex, uint8_t page, uint8_t component, const String &name);
 
     bool setForegroundColour(uint32_t colour, bool refresh = true);
     bool getForegroundColour(uint32_t &colour);

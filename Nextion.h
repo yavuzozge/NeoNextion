@@ -13,6 +13,8 @@ extern char *itoa(int a, char *buffer, unsigned char radix);
 #include <WString.h>
 #include <forward_list>
 #include <list>
+#include <vector>
+#include <functional>
 
 #include "NextionTypes.h"
 
@@ -46,38 +48,48 @@ public:
     bool clear(uint32_t colour = NEX_COL_WHITE);
     bool drawPicture(uint16_t x, uint16_t y, uint8_t id);
     bool drawPicture(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t id);
-    
-    bool drawStr(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t fontID,
-                 const String &str, uint32_t bgColour,
+
+    bool drawStr(uint16_t x,
+                 uint16_t y,
+                 uint16_t w,
+                 uint16_t h,
+                 uint8_t fontID,
+                 const String &str,
+                 uint32_t bgColour,
                  uint32_t fgColour,
                  uint8_t bgType,
                  NextionFontAlignment xCentre,
                  NextionFontAlignment yCentre);
-    inline bool drawStr(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t fontID,
-                 const String &str, uint32_t fgColour)
+
+    inline bool drawStr(uint16_t x,
+                        uint16_t y,
+                        uint16_t w,
+                        uint16_t h,
+                        uint8_t fontID,
+                        const String &str,
+                        uint32_t fgColour)
     {
         return drawStr(x, y, w, h, fontID, str, NEX_COL_BLACK, fgColour, NEX_BG_SOLIDCOLOUR, NEX_FA_LEFT_UP, NEX_FA_LEFT_UP);
     }
-    inline bool drawStr(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t fontID,
-                 const String &str, uint32_t bgColour, uint32_t fgColour)
+
+    inline bool drawStr(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t fontID, const String &str, uint32_t bgColour, uint32_t fgColour)
     {
         return drawStr(x, y, w, h, fontID, str, bgColour, fgColour, NEX_BG_SOLIDCOLOUR, NEX_FA_LEFT_UP, NEX_FA_LEFT_UP);
     }
-    inline bool drawStrCentered(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t fontID,
-                 const String &str, uint32_t fgColour)
+
+    inline bool drawStrCentered(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t fontID, const String &str, uint32_t fgColour)
     {
         return drawStr(x, y, w, h, fontID, str, NEX_COL_BLACK, fgColour, NEX_BG_SOLIDCOLOUR, NEX_FA_CENTRE, NEX_FA_CENTRE);
     }
+
     inline bool drawStrCentered(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t fontID,
-                 const String &str, uint32_t bgColour, uint32_t fgColour)
+                                const String &str, uint32_t bgColour, uint32_t fgColour)
     {
         return drawStr(x, y, w, h, fontID, str, bgColour, fgColour, NEX_BG_SOLIDCOLOUR, NEX_FA_CENTRE, NEX_FA_CENTRE);
     }
 
-    bool drawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,
-                  uint32_t colour);
-    bool drawRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, bool filled,
-                  uint32_t colour);
+    bool drawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint32_t colour);
+    bool drawRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, bool filled, uint32_t colour);
     bool drawCircle(uint16_t x, uint16_t y, uint16_t r, bool filled, uint32_t colour);
 
     void registerTouchable(INextionTouchable *touchable);
@@ -102,9 +114,9 @@ private:
     bool m_commandResultRequired;
 
     bool checkCommandCompleteIntrn(const std::vector<uint8_t> &buffer,
-                                           std::size_t length);
+                                   std::size_t length);
     void readSolicited(const std::function<void(const std::vector<uint8_t> &buffer,
-                                           std::size_t length)> &callback);
+                                                std::size_t length)> &callback);
     void readMessage(bool waitForSolicited);
     void processUnsolicited();
     bool waitForFirmwareChunkAck() const;

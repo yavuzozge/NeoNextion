@@ -13,8 +13,7 @@
 class INextionFontStyleable : public virtual INextionWidget
 {
 public:
-    INextionFontStyleable(Nextion &nex, uint8_t page, uint8_t component,
-                          const String &name);
+    INextionFontStyleable(Nextion &nex, uint8_t page, uint8_t component, const String &name);
 
     bool setFont(uint8_t id, bool refresh = true);
     bool getFont(uint8_t &id);

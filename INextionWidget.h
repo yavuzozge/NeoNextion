@@ -14,8 +14,7 @@
 class INextionWidget
 {
 public:
-    INextionWidget(Nextion &nex, uint8_t page, uint8_t component,
-                   const String &name);
+    INextionWidget(Nextion &nex, uint8_t page, uint8_t component, const String &name);
     virtual ~INextionWidget();
 
     void setInitialVisibility(bool visible);

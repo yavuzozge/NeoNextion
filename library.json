@@ -8,7 +8,7 @@
     "type": "git",
     "url": "https://github.com/atanisoft/NeoNextion.git"
   },
-  "version": "2.2.1",
+  "version": "2.2.2",
   "exclude": [
     "extra",
     "Doxyfile"
@@ -23,7 +23,10 @@
       "name": "Dan Nixon",
       "email": "dan@dan-nixon.com",
       "url": "http://www.dan-nixon.com"
-    }
+    },
+    {
+      "name": "Ozge Yavuz",
+    }    
   ],
   "frameworks": "arduino",
   "platforms": ["espressif32"]
