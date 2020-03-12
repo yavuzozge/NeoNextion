@@ -26,8 +26,17 @@
         }                                      \
         Serial.println();                      \
     }
+#define NextionLogStr(buffer, start, length)       \
+    {                                              \
+        for (uint16_t i = 0; i < length; ++i)      \
+        {                                          \
+            Serial.print((char)buffer[start + i]); \
+        }                                          \
+        Serial.println();                          \
+    }
 #else
 #define NextionLog(args...)
 #define NextionLogBin(buffer, start, length)
 #define NextionLogArray(buffer, start, length)
+#define NextionLogStr(buffer, start, length)
 #endif

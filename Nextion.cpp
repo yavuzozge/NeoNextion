@@ -553,8 +553,8 @@ void Nextion::unregisterTouchable(INextionTouchable *touchable)
  */
 void Nextion::sendCommand(const char *command, std::size_t commandSize)
 {
-    NextionLog("Nextion::sendCommand: Sending %u bytes: ", commandSize);
-    NextionLogArray(command, 0, commandSize);
+    NextionLog("Nextion::sendCommand: Sending %u bytes -> ", commandSize);
+    NextionLogStr(command, 0, commandSize);
 
     m_serialPort.write(command, commandSize);
     m_serialPort.write(0xFF);
