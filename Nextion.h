@@ -94,6 +94,7 @@ public:
 
     void registerTouchable(INextionTouchable *touchable);
     void unregisterTouchable(INextionTouchable *touchable);
+    void sendCommand(const char *command, std::size_t commandSize);
     void sendCommand(const String &command);
     void sendCommand(const char *format, ...);
     void sendCommand(const char *format, va_list args);
@@ -111,6 +112,7 @@ private:
     std::vector<uint8_t> m_buffer;
     std::vector<uint8_t> m_solicitedBuffer;
     std::vector<uint8_t> m_unsolicitedBuffer;
+    std::vector<char> m_printBuffer;
     bool m_commandResultRequired;
 
     bool checkCommandCompleteIntrn(const std::vector<uint8_t> &buffer,

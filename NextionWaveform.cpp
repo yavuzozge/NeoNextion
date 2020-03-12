@@ -25,10 +25,8 @@ bool NextionWaveform::addValue(uint8_t channel, uint8_t value)
     if (channel > 3)
         return false;
 
-    size_t commandLen = 22;
-    char commandBuffer[commandLen];
-    snprintf(commandBuffer, commandLen, "add %d,%d,%d", m_componentID, channel,
-             value);
+    char commandBuffer[23] = {0};
+    snprintf(commandBuffer, sizeof(commandBuffer), "add %u,%d,%d", m_componentID, channel, value);
     sendCommand(commandBuffer, false);
 
     /* TODO: this check still fails but the command does actually work */
@@ -43,11 +41,10 @@ bool NextionWaveform::addValue(uint8_t channel, uint8_t value)
  * \param refresh If the widget should be refreshed
  * \return True if successful
  */
-bool NextionWaveform::setChannelColour(uint8_t channel, uint32_t colour,
-                                       bool refresh)
+bool NextionWaveform::setChannelColour(uint8_t channel, uint32_t colour, bool refresh)
 {
-    char buffer[5];
-    snprintf(buffer, 5, "pco%d", channel);
+    char buffer[7] = {0};
+    snprintf(buffer, sizeof(buffer), "pco%d", channel);
     return setColour(buffer, colour, refresh);
 }
 
@@ -58,8 +55,8 @@ bool NextionWaveform::setChannelColour(uint8_t channel, uint32_t colour,
  * \return True if successful */
 bool NextionWaveform::getChannelColour(uint8_t channel, uint32_t &colour)
 {
-    char buffer[5];
-    snprintf(buffer, 5, "pco%d", channel);
+    char buffer[7] = {0};
+    snprintf(buffer, sizeof(buffer), "pco%d", channel);
     return getColour(buffer, colour);
 }
 

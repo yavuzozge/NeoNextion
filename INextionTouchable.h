@@ -21,7 +21,7 @@ public:
 
     INextionTouchable(Nextion &nex, uint8_t page, uint8_t component,
                       const String &name);
-    ~INextionTouchable();
+    virtual ~INextionTouchable();
 
     bool processEvent(uint8_t pageID, uint8_t componentID, uint8_t eventType);
 
