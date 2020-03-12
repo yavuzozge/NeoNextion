@@ -588,7 +588,7 @@ void Nextion::sendCommand(const char *format, va_list args)
     }
     else 
     {
-        if (written > m_printBuffer.size())
+        if (written >= m_printBuffer.size())
         {
             m_printBuffer.resize(written + 1);
             vsnprintf(&m_printBuffer[0], m_printBuffer.size(), format, args);
