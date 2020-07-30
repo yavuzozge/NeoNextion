@@ -1,5 +1,6 @@
 #pragma once
 
+// Uncomment for quick debugging of communication with the device
 //#define ENABLE_NEXTION_LOGGER
 
 #ifdef ENABLE_NEXTION_LOGGER

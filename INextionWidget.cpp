@@ -82,7 +82,7 @@ bool INextionWidget::setNumberProperty(const String &propertyName, uint32_t valu
  */
 bool INextionWidget::getNumberProperty(const String &propertyName, uint32_t &value)
 {
-    sendCommandWithWait("get %s.%s", m_name.c_str(), propertyName.c_str());
+    sendCommand("get %s.%s", m_name.c_str(), propertyName.c_str());
     return m_nextion.receiveNumber(value);
 }
 
@@ -105,7 +105,7 @@ bool INextionWidget::setStringProperty(const String &propertyName, const String 
  */
 size_t INextionWidget::getStringProperty(const String &propertyName, String &buffer)
 {
-    sendCommandWithWait("get %s.%s", m_name.c_str(), propertyName.c_str());
+    sendCommand("get %s.%s", m_name.c_str(), propertyName.c_str());
     return m_nextion.receiveString(buffer);
 }
 

@@ -98,7 +98,7 @@ public:
     void sendCommand(const String &command);
     void sendCommand(const char *format, ...);
     void sendCommand(const char *format, va_list args);
-    bool checkCommandComplete();
+    bool checkCommandComplete(bool overrideRequireCommandResult = false);
     bool receiveNumber(uint32_t &number);
     size_t receiveString(String &buffer);
     bool uploadFirmware(Stream &stream, size_t size, uint32_t baudrate,

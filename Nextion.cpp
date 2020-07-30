@@ -81,7 +81,7 @@ bool Nextion::requireCommandResult(bool require)
     if (require)
     {
         sendCommand("bkcmd=3");
-        if (checkCommandComplete())
+        if (checkCommandComplete(true))
         {
             m_commandResultRequired = true;
             return true;
@@ -678,11 +678,12 @@ bool Nextion::checkCommandCompleteIntrn(const std::vector<uint8_t> &buffer, std:
 
 /*!
  * \brief Checks if the last command was successful.
+ * \param overrideRequireCommandResult Indicates whether persisted command result requirement should be ignored
  * \return True if command was successful
  */
-bool Nextion::checkCommandComplete()
+bool Nextion::checkCommandComplete(bool overrideRequireCommandResult /*= false*/)
 {
-    if (!m_commandResultRequired)
+    if (!overrideRequireCommandResult && !m_commandResultRequired)
     {
         return true;
     }
@@ -711,7 +712,7 @@ bool Nextion::receiveNumber(uint32_t &number)
         }
         if (buffer[0] == NEX_RET_NUMBER_HEAD)
         {
-            number = (buffer[4] << 24) | (buffer[3] << 16) | (buffer[2] << 8) | (buffer[1]);
+            number = ((uint32_t)buffer[4] << 24) | ((uint32_t)buffer[3] << 16) | ((uint32_t)buffer[2] << 8) | (buffer[1]);
             NextionLog("Nextion::receiveNumber: value: %d\n", number);
             result = true;
             return;
