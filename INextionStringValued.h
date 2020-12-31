@@ -58,16 +58,18 @@ public:
 
     /*!
    * \brief Gets the text parsed as a number.
-   * \return Numerical value
+   * \param value Numerical value
+   * \return True if successful
    * \see INextionStringValued::setTextAsNumber
    */
-    uint32_t getTextAsNumber()
+    bool getTextAsNumber(uint32_t& value)
     {
         String buffer;
         if (getStringProperty("txt", buffer))
         {
-            return buffer.toInt();
+            value = buffer.toInt();
+            return true;
         }
-        return 0;
+        return false;
     }
 };

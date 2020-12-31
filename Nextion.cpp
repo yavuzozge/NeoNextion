@@ -63,12 +63,12 @@ bool Nextion::init()
 {
     m_buffer.clear();
 
-    bool result1 = requireCommandResult(true);
+    // Don't check the result from the following command
+    // since in latest Nextion firmwares, bkcmd=3 is returning 1A FF FF FF
+    requireCommandResult(true);
 
     sendCommand("page 0");
-    bool result2 = checkCommandComplete();
-
-    return result1 && result2;
+    return checkCommandComplete();
 }
 
 /*!
@@ -116,6 +116,7 @@ void Nextion::readSolicited(
 {
     readMessage(true);
     std::size_t length = 0;
+    NextionLog("Nextion::readSolicited: Checking for messages. Buffer size: %u\n", m_solicitedBuffer.size());
     if (calcMessageLength(m_solicitedBuffer, 0, length))
     {
         callback(m_solicitedBuffer, length);
@@ -211,7 +212,7 @@ void Nextion::processUnsolicited()
             }
             else
             {
-                NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_TOUCH_HEAD processed. pageID: %u, componentID: %u, eventType: %u\n",
+                NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_TOUCH_HEAD for pageID: %u, componentID: %u, eventType: %u\n",
                            m_unsolicitedBuffer[start + 1],
                            m_unsolicitedBuffer[start + 2],
                            m_unsolicitedBuffer[start + 3]);
@@ -222,9 +223,10 @@ void Nextion::processUnsolicited()
                                               m_unsolicitedBuffer[start + 2],
                                               m_unsolicitedBuffer[start + 3]))
                     {
-                        NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_TOUCH_HEAD accepted by: %s\n", (*iter)->getName().c_str());
+                        NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_TOUCH_HEAD was handled by: %s\n", (*iter)->getName().c_str());
                     }
                 }
+                NextionLog("Nextion::processUnsolicited: NEX_RET_EVENT_TOUCH_HEAD processing completed");
             }
             break;
 
@@ -731,8 +733,8 @@ bool Nextion::receiveNumber(uint32_t &number)
  */
 size_t Nextion::receiveString(String &strBuffer)
 {
-    size_t length = 0;
-    readSolicited([&length, &strBuffer](const std::vector<uint8_t> &buffer, std::size_t length) {
+    size_t result = 0;
+    readSolicited([&result, &strBuffer](const std::vector<uint8_t> &buffer, std::size_t length) {
         if (length == 0)
         {
             NextionLog("Nextion::receiveString: Reading response timed out.\n");
@@ -751,10 +753,10 @@ size_t Nextion::receiveString(String &strBuffer)
 
         strBuffer.trim();
         NextionLog("Nextion::receiveString: value: '%s'\n", strBuffer.c_str());
-        length = strBuffer.length();
+        result = strBuffer.length();
     });
 
-    return length;
+    return result;
 }
 
 bool Nextion::waitForFirmwareChunkAck() const
